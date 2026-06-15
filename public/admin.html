@@ -353,6 +353,7 @@
 
   <!-- Script Logic -->
   <script>
+    const API_BASE = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3000')) ? 'http://localhost:3000' : '';
     let adminComplaints = [];
     let adminPasscode = (localStorage.getItem('adminPasscode') || '').trim();
     let pollInterval = null;
@@ -399,7 +400,7 @@
         return;
       }
       try {
-        const response = await fetch('/api/admin/verify', {
+        const response = await fetch(API_BASE + '/api/admin/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ passcode: adminPasscode.trim() })
@@ -455,7 +456,7 @@
       const errorEl = document.getElementById('loginError');
 
       try {
-        const response = await fetch('/api/admin/verify', {
+        const response = await fetch(API_BASE + '/api/admin/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ passcode: code })
@@ -519,7 +520,7 @@
     // Fetch administrative items
     async function loadAdminData() {
       try {
-        const response = await fetch('/api/complaints');
+        const response = await fetch(API_BASE + '/api/complaints');
         if (response.ok) {
           adminComplaints = await response.json();
           updateMetrics();
@@ -842,7 +843,7 @@
     // Call update status endpoint
     async function updateStatus(id, newStatus) {
       try {
-        const response = await fetch(`/api/complaints/${id}`, {
+        const response = await fetch(API_BASE + `/api/complaints/${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -878,7 +879,7 @@
     // Toggle archiving status
     async function toggleArchive(id, shouldArchive) {
       try {
-        const response = await fetch(`/api/complaints/${id}`, {
+        const response = await fetch(API_BASE + `/api/complaints/${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -1049,7 +1050,7 @@
       }
 
       try {
-        const response = await fetch(`/api/complaints/${activeId}`, {
+        const response = await fetch(API_BASE + `/api/complaints/${activeId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -1142,7 +1143,7 @@
       const newProgress = (item.status === 'Pending' && (item.progressPercent || 0) === 0) ? 50 : (item.progressPercent || 0);
 
       try {
-        const response = await fetch(`/api/complaints/${forwardActiveId}`, {
+        const response = await fetch(API_BASE + `/api/complaints/${forwardActiveId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

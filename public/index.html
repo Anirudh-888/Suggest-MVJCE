@@ -189,6 +189,8 @@
 
   <!-- Script Logic -->
   <script>
+    const API_BASE = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3000')) ? 'http://localhost:3000' : '';
+
     // Subcategories Data Mapping
     const categoriesMap = {
       "Academics": ["Teaching", "Library", "Teaching Materials", "Skill-based Programmes", "Workshops"],
@@ -375,7 +377,7 @@
       const description = document.getElementById('description').value;
 
       try {
-        const response = await fetch('/api/complaints', {
+        const response = await fetch(API_BASE + '/api/complaints', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

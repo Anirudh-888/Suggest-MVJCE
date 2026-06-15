@@ -200,6 +200,7 @@
 
   <!-- Script Logic -->
   <script>
+    const API_BASE = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3000')) ? 'http://localhost:3000' : '';
     let complaintsData = [];
     let currentCategory = 'all';
 
@@ -248,7 +249,7 @@
     // Load Data from API
     async function loadComplaints() {
       try {
-        const response = await fetch('/api/complaints');
+        const response = await fetch(API_BASE + '/api/complaints');
         if (response.ok) {
           complaintsData = await response.json();
           // Filter out archived/deleted ones
@@ -356,7 +357,7 @@
     // Upvoting API Handler
     async function upvoteSuggestion(id, buttonEl) {
       try {
-        const response = await fetch(`/api/complaints/${id}/vote`, {
+        const response = await fetch(API_BASE + `/api/complaints/${id}/vote`, {
           method: 'POST'
         });
 
