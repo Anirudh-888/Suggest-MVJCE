@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View submitted suggestions and complaints, support primary issues by upvoting, and track resolution progress.">
+  <title>Anonym Box - Public Board</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center min-h-screen pb-28">
+
+  <!-- macOS Saturated Background Highlights (iOS 26 Style) -->
+  <div class="fixed top-[-10%] left-[-10%] w-[65vw] h-[65vw] rounded-full bg-blue-500/15 dark:bg-blue-600/20 blur-[130px] pointer-events-none z-[-1]"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[65vw] h-[65vw] rounded-full bg-purple-500/15 dark:bg-purple-600/25 blur-[130px] pointer-events-none z-[-1]"></div>
+  <div class="fixed top-[35%] right-[5%] w-[45vw] h-[45vw] rounded-full bg-pink-500/10 dark:bg-pink-600/15 blur-[130px] pointer-events-none z-[-1]"></div>
+
+  <!-- Header -->
+  <header class="w-full max-w-5xl flex justify-between items-center mb-8 animate-fade-in">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+        <i data-lucide="archive-restore"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight">Anonym<span class="text-gradient">Box</span></h1>
+        <p class="text-xs text-[var(--text-secondary)]">Public Suggestion Board</p>
+      </div>
+    </div>
+    
+    <!-- Theme Toggle -->
+    <button id="themeToggleBtn" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-[var(--text-primary)] hover:scale-110 active:scale-95 transition-all">
+      <i data-lucide="sun" id="sunIcon" class="hidden"></i>
+      <i data-lucide="moon" id="moonIcon"></i>
+    </button>
+  </header>
+
+  <!-- Filter & Search Controls Section (Safari macOS Style Window) -->
+  <main class="w-full max-w-5xl glass-panel p-6 md:p-8 flex flex-col gap-6 animate-scale-up relative overflow-hidden">
+    <!-- macOS Control Dot Bar + Address Pill -->
+    <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-4 -mx-6 md:-mx-8 px-6 md:px-8">
+      <!-- Window Dots -->
+      <div class="flex gap-2">
+        <span class="mac-dot bg-[#ff5f56]"></span>
+        <span class="mac-dot bg-[#ffbd2e]"></span>
+        <span class="mac-dot bg-[#27c93f]"></span>
+      </div>
+      <!-- URL Address Bar -->
+      <div class="address-bar">
+        <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+        <span>anonymbox.app/board</span>
+      </div>
+      <!-- Right Spacer for balance -->
+      <div class="w-16"></div>
+    </div>
+
+    <!-- Search Controls -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <!-- Search -->
+      <div class="relative flex-1">
+        <i data-lucide="search" class="absolute left-3.5 top-3.5 w-4 h-4 text-[var(--text-tertiary)]"></i>
+        <input type="text" id="searchInput" placeholder="Search suggestions..." class="w-full pl-10 pr-4 py-3 text-sm" />
+      </div>
+
+      <!-- Sorting Select -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] whitespace-nowrap">Sort By</span>
+        <select id="sortSelect" class="px-4 py-3 text-sm w-full md:w-48">
+          <option value="votes">Most Upvoted</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Category Tabs Filter (Scrollable on mobile) -->
+    <div class="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin">
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap active-tab" data-category="all">
+        All Feedbacks
+      </button>
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap" data-category="Academics">
+        Academics
+      </button>
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap" data-category="Infrastructure">
+        Infrastructure
+      </button>
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap" data-category="Hostel">
+        Hostel
+      </button>
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap" data-category="Canteen">
+        Canteen
+      </button>
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap" data-category="Sports & Co-curricular">
+        Sports & Co-curricular
+      </button>
+      <button class="category-tab px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] whitespace-nowrap" data-category="Others">
+        Others
+      </button>
+    </div>
+
+    <!-- Suggestion Grid List -->
+    <div id="suggestionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[200px]">
+      <!-- Cards will load dynamically via API -->
+      <div class="col-span-full flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+        <p class="text-sm">Loading campus board...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- macOS Detail Popup Modal -->
+  <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[120] p-4 animate-fade-in" onclick="closeDetail()">
+    <div class="glass-panel max-w-lg w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
+      <!-- macOS Style window dots -->
+      <div class="flex gap-1.5 absolute top-6 left-6">
+        <button onclick="closeDetail()" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" title="Close"></button>
+        <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-60"></div>
+        <div class="w-3 h-3 rounded-full bg-green-500 opacity-60"></div>
+      </div>
+
+      <!-- Close icon (top right) -->
+      <button onclick="closeDetail()" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Modal Contents -->
+      <div class="mt-6 space-y-5">
+        <div class="flex justify-between items-center">
+          <span id="modalCategoryTag" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500">
+            Category
+          </span>
+          <span id="modalStatusTag" class="px-3 py-1 rounded-full text-xs font-semibold">
+            Status
+          </span>
+        </div>
+
+        <h3 id="modalTitle" class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Title</h3>
+
+        <div class="max-h-[35vh] overflow-y-auto pr-2 scrollbar-thin">
+          <p id="modalDescription" class="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">Description</p>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-[var(--border-color)]">
+          <span id="modalTimestamp" class="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
+            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+            Time
+          </span>
+
+          <!-- Upvote Button -->
+          <button id="modalUpvoteBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border border-blue-500/20 transition-all hover:scale-105 active:scale-95">
+            <i data-lucide="arrow-big-up-dash" class="w-4 h-4"></i>
+            <span class="font-bold text-sm" id="modalVoteCount">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- macOS Floating Dock Nav -->
+  <nav class="dock-nav glass-dock">
+    <a href="index.html" class="dock-item">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="plus" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Submit Feedback</span>
+    </a>
+    <a href="board.html" class="dock-item active">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Public Board</span>
+    </a>
+    <a href="admin.html" class="dock-item">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="lock" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Admin Panel</span>
+    </a>
+  </nav>
+
+  <!-- Script Logic -->
+  <script>
+    let complaintsData = [];
+    let currentCategory = 'all';
+
+    // Theme Switcher Logic
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (theme === 'dark') {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    });
+
+    // Helper: Format Time
+    function formatTime(isoString) {
+      const date = new Date(isoString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // Load Data from API
+    async function loadComplaints() {
+      try {
+        const response = await fetch('/api/complaints');
+        if (response.ok) {
+          complaintsData = await response.json();
+          // Filter out archived/deleted ones
+          complaintsData = complaintsData.filter(c => !c.archived);
+          renderBoard();
+        } else {
+          console.error("Failed to fetch complaints");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Render Grid Elements
+    function renderBoard() {
+      const grid = document.getElementById('suggestionsGrid');
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+      const sortBy = document.getElementById('sortSelect').value;
+
+      // Filter
+      let filtered = complaintsData.filter(item => {
+        const matchesCategory = (currentCategory === 'all' || item.category === currentCategory);
+        const matchesSearch = item.title.toLowerCase().includes(searchQuery) || 
+                              item.description.toLowerCase().includes(searchQuery) ||
+                              item.subcategory.toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+      });
+
+      // Sort
+      if (sortBy === 'votes') {
+        filtered.sort((a, b) => b.votes - a.votes);
+      } else if (sortBy === 'newest') {
+        filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      } else if (sortBy === 'oldest') {
+        filtered.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
+            <i data-lucide="package-open" class="w-12 h-12 mb-3"></i>
+            <p class="text-sm font-medium">No active suggestions found for this criteria.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        let badgeClass = 'badge-status-pending';
+        if (item.status === 'In Progress') badgeClass = 'badge-status-inprogress';
+        if (item.status === 'Resolved') badgeClass = 'badge-status-resolved';
+
+        return `
+          <div class="glass-panel p-6 flex flex-col justify-between text-left animate-scale-up cursor-pointer hover:border-blue-500/30 transition-colors duration-300" id="card-${item.id}" onclick="openDetail('${item.id}')">
+            <div>
+              <!-- Header info: Category and Status -->
+              <div class="flex justify-between items-start mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500">
+                  ${item.category} &rsaquo; ${item.subcategory}
+                </span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeClass}">
+                  ${item.status}
+                </span>
+              </div>
+              
+              <!-- Title -->
+              <h3 class="text-lg font-bold mb-2 text-[var(--text-primary)] hover:text-blue-500 transition-colors">${item.title}</h3>
+              
+              <!-- Description -->
+              <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-6 line-clamp-3">${item.description}</p>
+            </div>
+            
+            <!-- Card Footer: Time and Upvote -->
+            <div class="flex justify-between items-center pt-4 border-t border-[var(--border-color)]" onclick="event.stopPropagation()">
+              <span class="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                ${formatTime(item.timestamp)}
+              </span>
+              
+              <!-- Upvote Button -->
+              <button onclick="upvoteSuggestion('${item.id}', this)" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border border-blue-500/20 transition-all hover:scale-105 active:scale-95">
+                <i data-lucide="arrow-big-up-dash" class="w-4 h-4"></i>
+                <span class="font-bold text-sm" id="vote-count-${item.id}">${item.votes}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Upvoting API Handler
+    async function upvoteSuggestion(id, buttonEl) {
+      try {
+        const response = await fetch(`/api/complaints/${id}/vote`, {
+          method: 'POST'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Update internal data store
+          const item = complaintsData.find(c => c.id === id);
+          if (item) item.votes = data.votes;
+          
+          // Update card count
+          const countEl = document.getElementById(`vote-count-${id}`);
+          if (countEl) countEl.textContent = data.votes;
+
+          // Update modal count if open
+          const modalCountEl = document.getElementById('modalVoteCount');
+          if (modalCountEl && document.getElementById('detailModal').dataset.activeId === id) {
+            modalCountEl.textContent = data.votes;
+          }
+          
+          // Animate and update UI locally
+          buttonEl.classList.add('upvote-pulse');
+          setTimeout(() => {
+            buttonEl.classList.remove('upvote-pulse');
+          }, 400);
+        }
+      } catch (err) {
+        console.error("Upvote failed:", err);
+      }
+    }
+
+    // Modal Display Logic
+    function openDetail(id) {
+      const item = complaintsData.find(c => c.id === id);
+      if (!item) return;
+
+      const modal = document.getElementById('detailModal');
+      modal.dataset.activeId = id;
+
+      document.getElementById('modalCategoryTag').textContent = `${item.category} \u203A ${item.subcategory}`;
+      document.getElementById('modalTitle').textContent = item.title;
+      document.getElementById('modalDescription').textContent = item.description;
+      document.getElementById('modalTimestamp').innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> ${new Date(item.timestamp).toLocaleString()}`;
+      document.getElementById('modalVoteCount').textContent = item.votes;
+
+      // Status Styling Setup
+      const statusTag = document.getElementById('modalStatusTag');
+      statusTag.textContent = item.status;
+      statusTag.className = 'px-3 py-1 rounded-full text-xs font-semibold';
+      if (item.status === 'Pending') statusTag.classList.add('badge-status-pending');
+      else if (item.status === 'In Progress') statusTag.classList.add('badge-status-inprogress');
+      else if (item.status === 'Resolved') statusTag.classList.add('badge-status-resolved');
+
+      // Upvote action binding
+      const modalUpvoteBtn = document.getElementById('modalUpvoteBtn');
+      modalUpvoteBtn.onclick = (e) => {
+        e.stopPropagation();
+        upvoteSuggestion(id, modalUpvoteBtn);
+      };
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeDetail() {
+      const modal = document.getElementById('detailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Set Category Active States
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.category-tab').forEach(t => {
+          t.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+          t.classList.add('bg-[var(--bg-card)]', 'text-[var(--text-primary)]');
+        });
+
+        this.classList.remove('bg-[var(--bg-card)]', 'text-[var(--text-primary)]');
+        this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+
+        currentCategory = this.getAttribute('data-category');
+        renderBoard();
+      });
+    });
+
+    // Inputs Events
+    document.getElementById('searchInput').addEventListener('input', renderBoard);
+    document.getElementById('sortSelect').addEventListener('change', renderBoard);
+
+    // Initial Loading Calls
+    loadComplaints();
+    lucide.createIcons();
+  </script>
+
+  <style>
+    /* Styling active state logic for filter button */
+    .category-tab.bg-blue-600 {
+      border-color: #2563eb !important;
+    }
+  </style>
+</body>
+</html>
+

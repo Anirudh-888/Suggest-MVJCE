@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Submit your suggestions and complaints anonymously. Help us improve our college campus.">
+  <title>Anonym Box - Submit Suggestion</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Lucide Icons for macOS-like elements -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center justify-center min-h-screen pb-28">
+
+  <!-- macOS Saturated Background Highlights (iOS 26 Style) -->
+  <div class="fixed top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/15 dark:bg-blue-600/20 blur-[130px] pointer-events-none z-[-1]"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-purple-500/15 dark:bg-purple-600/25 blur-[130px] pointer-events-none z-[-1]"></div>
+  <div class="fixed top-[35%] right-[5%] w-[45vw] h-[45vw] rounded-full bg-pink-500/10 dark:bg-pink-600/15 blur-[130px] pointer-events-none z-[-1]"></div>
+
+  <!-- Header & Theme Switcher -->
+  <header class="w-full max-w-2xl flex justify-between items-center mb-8 animate-fade-in">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+        <i data-lucide="archive-restore"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight">Anonym<span class="text-gradient">Box</span></h1>
+        <p class="text-xs text-[var(--text-secondary)]">MVJ College of Engineering</p>
+      </div>
+    </div>
+    
+    <!-- Theme Toggle -->
+    <button id="themeToggleBtn" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-[var(--text-primary)] hover:scale-110 active:scale-95 transition-all">
+      <i data-lucide="sun" id="sunIcon" class="hidden"></i>
+      <i data-lucide="moon" id="moonIcon"></i>
+    </button>
+  </header>
+
+  <!-- Main Content Form Box (macOS / iOS 26 Saturated Glass) -->
+  <main class="w-full max-w-2xl glass-panel p-6 md:p-10 animate-scale-up relative overflow-hidden">
+    <!-- macOS Control Dot Bar + Address Pill -->
+    <div class="flex justify-between items-center mb-8 border-b border-[var(--border-color)] pb-4 -mx-6 md:-mx-10 px-6 md:px-10">
+      <!-- Window Dots -->
+      <div class="flex gap-2">
+        <span class="mac-dot bg-[#ff5f56]"></span>
+        <span class="mac-dot bg-[#ffbd2e]"></span>
+        <span class="mac-dot bg-[#27c93f]"></span>
+      </div>
+      <!-- URL Address Bar -->
+      <div class="address-bar">
+        <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+        <span>anonymbox.app</span>
+      </div>
+      <!-- Right Spacer for balance -->
+      <div class="w-16"></div>
+    </div>
+
+    <!-- Title and Guarantee -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold tracking-tight mb-2">Submit Suggestion & Complaint</h2>
+      <p class="text-[var(--text-secondary)] text-sm md:text-base">Your voice matters. Share your feedback to build a better campus environment.</p>
+    </div>
+
+    <!-- Security Notice -->
+    <div class="flex items-start gap-4 p-4 mb-8 bg-blue-500/10 border border-blue-500/20 rounded-xl text-left animate-fade-in" style="animation-delay: 0.1s;">
+      <div class="text-blue-500 mt-1">
+        <i data-lucide="shield-check" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-blue-500">True Anonymity Guaranteed</h3>
+        <p class="text-xs text-[var(--text-secondary)] mt-1">We do not log your identity, accounts, IP address, or submission source. Your report is completely untraceable.</p>
+      </div>
+    </div>
+
+    <!-- Suggestion Submission Form -->
+    <form id="complaintForm" class="space-y-6 text-left">
+      <!-- Title Input -->
+      <div>
+        <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Subject / Title</label>
+        <input type="text" id="title" required placeholder="e.g. Broken projector in Room 402" class="w-full px-4 py-3 text-sm focus:outline-none" />
+      </div>
+
+      <!-- Categories & Subcategories Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="category" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Main Category</label>
+          <select id="category" required class="w-full px-4 py-3 text-sm">
+            <option value="" disabled selected>Select Main Category</option>
+            <option value="Academics">Academics</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Hostel">Hostel</option>
+            <option value="Canteen">Canteen</option>
+            <option value="Sports & Co-curricular">Sports & Co-curricular</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+        <div>
+          <label for="subcategory" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Subcategory</label>
+          <select id="subcategory" required disabled class="w-full px-4 py-3 text-sm opacity-50 cursor-not-allowed">
+            <option value="" disabled selected>Select Subcategory</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Description Textarea -->
+      <div>
+        <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Detailed Description</label>
+        <textarea id="description" required rows="5" placeholder="Describe the issue or provide your suggestion in detail. Mention locations or specific context if helpful." class="w-full px-4 py-3 text-sm focus:outline-none resize-none"></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/10 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+        <span>Send Anonymously</span>
+        <i data-lucide="send" class="w-4 h-4"></i>
+      </button>
+    </form>
+  </main>
+
+  <!-- Success Toast Overlay -->
+  <div id="successOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-md hidden items-center justify-center z-[110] p-4">
+    <div class="glass-panel max-w-md w-full p-8 text-center animate-scale-up">
+      <div class="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-500 mx-auto flex items-center justify-center mb-6 border border-emerald-500/30">
+        <i data-lucide="check-circle" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-bold mb-2">Submission Successful!</h3>
+      <p class="text-sm text-[var(--text-secondary)] mb-6">Your anonymous feedback has been recorded. It is now live on the Public Board for upvoting.</p>
+      <button id="closeOverlayBtn" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-md">
+        Done
+      </button>
+    </div>
+  </div>
+
+  <!-- macOS Floating Dock Nav -->
+  <nav class="dock-nav glass-dock">
+    <a href="index.html" class="dock-item active">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="plus" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Submit Feedback</span>
+    </a>
+    <a href="board.html" class="dock-item">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Public Board</span>
+    </a>
+    <a href="admin.html" class="dock-item">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="lock" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Admin Panel</span>
+    </a>
+  </nav>
+
+  <!-- Script Logic -->
+  <script>
+    // Subcategories Data Mapping
+    const categoriesMap = {
+      "Academics": ["Teaching", "Library", "Teaching Materials", "Skill-based Programmes", "Workshops"],
+      "Infrastructure": ["Classrooms", "Labs", "Restrooms", "Drinking Water", "Internet/Wi-Fi"],
+      "Hostel": ["Rooms", "Mess Food", "Hot Water", "Maintenance", "Discipline"],
+      "Canteen": ["Food Quality", "Hygiene", "Pricing", "Seating", "Service Speed"],
+      "Sports & Co-curricular": ["Playground", "Gym", "Equipment", "Club Activities", "Events"],
+      "Others": ["General Feedback", "Bus/Transport", "Office/Administration"]
+    };
+
+    const categorySelect = document.getElementById('category');
+    const subcategorySelect = document.getElementById('subcategory');
+
+    categorySelect.addEventListener('change', function() {
+      const selectedCategory = this.value;
+      const subcategories = categoriesMap[selectedCategory] || [];
+
+      // Reset & enable subcategory
+      subcategorySelect.innerHTML = '<option value="" disabled selected>Select Subcategory</option>';
+      subcategorySelect.disabled = false;
+      subcategorySelect.classList.remove('opacity-50', 'cursor-not-allowed');
+
+      subcategories.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub;
+        option.textContent = sub;
+        subcategorySelect.appendChild(option);
+      });
+    });
+
+    // Theme Switcher Logic
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (theme === 'dark') {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    }
+
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    });
+
+    // Form Submission Logic
+    const form = document.getElementById('complaintForm');
+    const successOverlay = document.getElementById('successOverlay');
+    const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const category = categorySelect.value;
+      const subcategory = subcategorySelect.value;
+      const description = document.getElementById('description').value;
+
+      try {
+        const response = await fetch('/api/complaints', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ title, category, subcategory, description })
+        });
+
+        if (response.ok) {
+          successOverlay.classList.remove('hidden');
+          successOverlay.classList.add('flex');
+          form.reset();
+          // Disable subcategory dropdown again
+          subcategorySelect.disabled = true;
+          subcategorySelect.classList.add('opacity-50', 'cursor-not-allowed');
+          subcategorySelect.innerHTML = '<option value="" disabled selected>Select Subcategory</option>';
+        } else {
+          const errData = await response.json();
+          alert('Error: ' + (errData.error || 'Failed to submit suggestion'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Failed to connect to the server.');
+      }
+    });
+
+    closeOverlayBtn.addEventListener('click', () => {
+      successOverlay.classList.add('hidden');
+      successOverlay.classList.remove('flex');
+    });
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

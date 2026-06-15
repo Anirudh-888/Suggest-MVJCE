@@ -1,0 +1,35 @@
+[
+  {
+    "id": "6ab9e6b4-d822-4144-9ef3-4232cb8e91a5",
+    "title": "Broken Projector in Room 302",
+    "category": "Infrastructure",
+    "subcategory": "Classrooms",
+    "description": "The projector in room 302 of the MVJ block has a distorted blue tint and flickering bulb. Please check this.",
+    "status": "Resolved",
+    "votes": 1,
+    "archived": true,
+    "timestamp": "2026-06-15T09:35:47.075Z"
+  },
+  {
+    "id": "2e328a6c-dc14-4c24-9575-797ca46c65da",
+    "title": "Broken Projector in Room 302",
+    "category": "Infrastructure",
+    "subcategory": "Classrooms",
+    "description": "The projector in room 302 of the MVJ block has a distorted blue tint and flickering bulb. Please check this.",
+    "status": "Resolved",
+    "votes": 1,
+    "archived": true,
+    "timestamp": "2026-06-15T09:38:22.679Z"
+  },
+  {
+    "id": "c0d91666-827a-4cd9-ab08-482753987146",
+    "title": "Broken Projector in Room 302",
+    "category": "Infrastructure",
+    "subcategory": "Classrooms",
+    "description": "The projector in room 302 of the MVJ block has a distorted blue tint and flickering bulb. Please check this.",
+    "status": "Resolved",
+    "votes": 1,
+    "archived": true,
+    "timestamp": "2026-06-15T09:46:00.572Z"
+  }
+]

@@ -1,0 +1,343 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* iOS 26 Bright Glassmorphism - Light Mode */
+  --bg-app: linear-gradient(135deg, #e0e7ff 0%, #f5f3ff 40%, #fae8ff 70%, #fdf2f8 100%);
+  --bg-card: rgba(255, 255, 255, 0.45);
+  --bg-card-hover: rgba(255, 255, 255, 0.6);
+  
+  /* Bright white glass border and inner shadow highlight */
+  --border-color: rgba(255, 255, 255, 0.6);
+  --border-color-hover: rgba(255, 255, 255, 0.85);
+  
+  --text-primary: #111116;
+  --text-secondary: #4a4a52;
+  --text-tertiary: #7d7d85;
+  --accent: #2563eb;
+  --accent-gradient: linear-gradient(135deg, #2563eb, #6366f1, #d946ef);
+  --accent-glow: rgba(37, 99, 235, 0.12);
+  
+  --pending-bg: rgba(245, 158, 11, 0.15);
+  --pending-text: #b45309;
+  --pending-border: rgba(245, 158, 11, 0.35);
+  
+  --progress-bg: rgba(59, 130, 246, 0.15);
+  --progress-text: #1d4ed8;
+  --progress-border: rgba(59, 130, 246, 0.35);
+  
+  --resolved-bg: rgba(16, 185, 129, 0.15);
+  --resolved-text: #047857;
+  --resolved-border: rgba(16, 185, 129, 0.35);
+
+  --shadow-sm: 0 4px 12px rgba(31, 38, 135, 0.03);
+  --shadow-md: 0 12px 40px 0 rgba(31, 38, 135, 0.06);
+  --shadow-lg: 0 16px 48px 0 rgba(31, 38, 135, 0.1);
+  --glass-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+[data-theme="dark"] {
+  /* iOS 26 Bright Glassmorphism - Dark Mode (Rich saturated background) */
+  --bg-app: linear-gradient(135deg, #06060c 0%, #0b091a 45%, #180927 75%, #050d18 100%);
+  --bg-card: rgba(15, 15, 24, 0.45);
+  --bg-card-hover: rgba(22, 22, 34, 0.55);
+  
+  /* Elegant translucent borders */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-hover: rgba(255, 255, 255, 0.18);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0bd;
+  --text-tertiary: #7c7c8a;
+  --accent: #38bdf8;
+  --accent-gradient: linear-gradient(135deg, #38bdf8, #818cf8, #f472b6);
+  --accent-glow: rgba(56, 189, 248, 0.25);
+  
+  --pending-bg: rgba(245, 158, 11, 0.18);
+  --pending-text: #fbbf24;
+  --pending-border: rgba(245, 158, 11, 0.4);
+  
+  --progress-bg: rgba(59, 130, 246, 0.18);
+  --progress-text: #60a5fa;
+  --progress-border: rgba(59, 130, 246, 0.4);
+  
+  --resolved-bg: rgba(16, 185, 129, 0.18);
+  --resolved-text: #34d399;
+  --resolved-border: rgba(16, 185, 129, 0.4);
+
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px 0 rgba(0, 0, 0, 0.55);
+  --glass-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              color 0.3s ease, 
+              border-color 0.3s ease, 
+              box-shadow 0.3s ease;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* macOS / iOS Glass Panel Utilities */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(40px) saturate(210%);
+  -webkit-backdrop-filter: blur(40px) saturate(210%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--glass-shadow);
+  border-radius: 24px;
+}
+
+.glass-panel:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Address/URL Indicator bar like quickhire.app */
+.address-bar {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 999px;
+  padding: 4px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="dark"] .address-bar {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Window Control Dots */
+.mac-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+/* macOS/iOS Dock */
+.glass-dock {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(40px) saturate(210%);
+  -webkit-backdrop-filter: blur(40px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.08);
+}
+
+[data-theme="dark"] .glass-dock {
+  background: rgba(15, 15, 24, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.dock-nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  z-index: 100;
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 28px;
+  animation: slideDockUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.dock-item:hover {
+  transform: scale(1.16) translateY(-6px);
+}
+
+.dock-item.active {
+  position: relative;
+}
+
+.dock-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  width: 4px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #ffffff;
+}
+
+[data-theme="light"] .dock-item.active::after {
+  background: var(--accent);
+  box-shadow: 0 0 4px var(--accent);
+}
+
+.dock-item .tooltip {
+  position: absolute;
+  bottom: 66px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+[data-theme="dark"] .dock-item .tooltip {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000000;
+}
+
+.dock-item:hover .tooltip {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Badge Styles */
+.badge-status-pending {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+  border: 1px solid var(--pending-border);
+  box-shadow: 0 2px 8px var(--pending-bg);
+}
+
+.badge-status-inprogress {
+  background: var(--progress-bg);
+  color: var(--progress-text);
+  border: 1px solid var(--progress-border);
+  box-shadow: 0 2px 8px var(--progress-bg);
+}
+
+.badge-status-resolved {
+  background: var(--resolved-bg);
+  color: var(--resolved-text);
+  border: 1px solid var(--resolved-border);
+  box-shadow: 0 2px 8px var(--resolved-bg);
+}
+
+/* Keyframe animations */
+@keyframes slideDockUp {
+  0% { transform: translateX(-50%) translateY(100px); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes bounceOnce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-scale-up {
+  animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.upvote-pulse {
+  animation: bounceOnce 0.4s ease-out;
+}
+
+/* Text Gradient Utilities */
+.text-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Transparent Glass Inputs */
+input, textarea, select {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+}
+
+[data-theme="dark"] input, 
+[data-theme="dark"] textarea, 
+[data-theme="dark"] select {
+  background: rgba(0, 0, 0, 0.25) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme="dark"] input:focus, 
+[data-theme="dark"] textarea:focus, 
+[data-theme="dark"] select:focus {
+  background: rgba(0, 0, 0, 0.4) !important;
+}

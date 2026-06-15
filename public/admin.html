@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="College Suggestion Box Administration Dashboard. Manage complaint progress.">
+  <title>Anonym Box - Admin Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center min-h-screen pb-28">
+
+  <!-- macOS Saturated Background Highlights (iOS 26 Style) -->
+  <div class="fixed top-[-10%] left-[-10%] w-[65vw] h-[65vw] rounded-full bg-blue-500/15 dark:bg-blue-600/20 blur-[130px] pointer-events-none z-[-1]"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[65vw] h-[65vw] rounded-full bg-purple-500/15 dark:bg-purple-600/25 blur-[130px] pointer-events-none z-[-1]"></div>
+  <div class="fixed top-[35%] right-[5%] w-[45vw] h-[45vw] rounded-full bg-pink-500/10 dark:bg-pink-600/15 blur-[130px] pointer-events-none z-[-1]"></div>
+
+  <!-- Header -->
+  <header class="w-full max-w-5xl flex justify-between items-center mb-8 animate-fade-in">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+        <i data-lucide="archive-restore"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight">Anonym<span class="text-gradient">Box</span> Portal</h1>
+        <p class="text-xs text-[var(--text-secondary)]">Administration System</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <!-- Logout Button (Only shown if authorized) -->
+      <button id="logoutBtn" class="hidden px-4 py-2 text-xs font-semibold text-red-500 bg-red-500/10 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-all">
+        Logout
+      </button>
+      
+      <!-- Theme Toggle -->
+      <button id="themeToggleBtn" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-[var(--text-primary)] hover:scale-110 active:scale-95 transition-all">
+        <i data-lucide="sun" id="sunIcon" class="hidden"></i>
+        <i data-lucide="moon" id="moonIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Login/Passcode Prompt Overlay (Sleek glass layout) -->
+  <div id="loginOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-[150] flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-md p-8 text-center animate-scale-up relative">
+      <div class="w-14 h-14 rounded-2xl bg-blue-600/15 border border-blue-500/30 text-blue-500 flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="lock" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-2xl font-bold mb-2">Admin Security</h2>
+      <p class="text-sm text-[var(--text-secondary)] mb-6">Please input your administrative security passcode to gain workspace access.</p>
+      
+      <form id="loginForm" class="space-y-4 text-left">
+        <div>
+          <input type="password" id="passcodeInput" placeholder="••••••••" required class="w-full text-center px-4 py-3 tracking-[0.2em] font-mono text-lg" />
+        </div>
+        <div id="loginError" class="text-xs text-red-500 text-center font-medium hidden">
+          Access Denied: Invalid security passcode
+        </div>
+        <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md transition-all">
+          Unlock Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Main Dashboard Content -->
+  <main id="adminMainContent" class="w-full max-w-5xl glass-panel p-6 md:p-8 flex flex-col gap-8 hidden animate-fade-in relative overflow-hidden">
+    <!-- macOS Control Dot Bar + Address Pill -->
+    <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-4 -mx-6 md:-mx-8 px-6 md:px-8">
+      <!-- Window Dots -->
+      <div class="flex gap-2">
+        <span class="mac-dot bg-[#ff5f56]"></span>
+        <span class="mac-dot bg-[#ffbd2e]"></span>
+        <span class="mac-dot bg-[#27c93f]"></span>
+      </div>
+      <!-- URL Address Bar -->
+      <div class="address-bar">
+        <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+        <span>anonymbox.app/admin</span>
+      </div>
+      <!-- Right Spacer for balance -->
+      <div class="w-16"></div>
+    </div>
+
+    <!-- Summary Metrics Grid -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+        <span class="text-2xl font-black text-blue-500 mb-1" id="metricTotal">0</span>
+        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Total Submissions</span>
+      </div>
+      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+        <span class="text-2xl font-black text-amber-500 mb-1" id="metricPending">0</span>
+        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Pending</span>
+      </div>
+      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+        <span class="text-2xl font-black text-blue-400 mb-1" id="metricProgress">0</span>
+        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">In Progress</span>
+      </div>
+      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+        <span class="text-2xl font-black text-emerald-500 mb-1" id="metricResolved">0</span>
+        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Resolved</span>
+      </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="relative flex-1 w-full">
+        <i data-lucide="search" class="absolute left-3.5 top-3.5 w-4 h-4 text-[var(--text-tertiary)]"></i>
+        <input type="text" id="adminSearchInput" placeholder="Search suggestions..." class="w-full pl-10 pr-4 py-3 text-sm" />
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <select id="adminCategorySelect" class="px-4 py-3 text-sm flex-1 md:flex-none">
+          <option value="all">All Categories</option>
+          <option value="Academics">Academics</option>
+          <option value="Infrastructure">Infrastructure</option>
+          <option value="Hostel">Hostel</option>
+          <option value="Canteen">Canteen</option>
+          <option value="Sports & Co-curricular">Sports & Co-curricular</option>
+          <option value="Others">Others</option>
+        </select>
+        
+        <select id="adminStatusSelect" class="px-4 py-3 text-sm flex-1 md:flex-none">
+          <option value="all">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Archived">Archived / Deleted</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Complaints Management List -->
+    <section id="adminComplaintsList" class="flex flex-col gap-4">
+      <!-- Complains dynamically populated -->
+      <div class="col-span-full flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+        <p class="text-sm">Loading admin dashboard...</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- macOS Detail Popup Modal for Admin -->
+  <div id="adminDetailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[120] p-4 animate-fade-in" onclick="closeAdminDetail()">
+    <div class="glass-panel max-w-lg w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
+      <!-- macOS Style window dots -->
+      <div class="flex gap-1.5 absolute top-6 left-6">
+        <button onclick="closeAdminDetail()" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" title="Close"></button>
+        <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-60"></div>
+        <div class="w-3 h-3 rounded-full bg-green-500 opacity-60"></div>
+      </div>
+
+      <!-- Close icon (top right) -->
+      <button onclick="closeAdminDetail()" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Modal Contents -->
+      <div class="mt-6 space-y-5">
+        <div class="flex justify-between items-center">
+          <span id="modalCategoryTag" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500">
+            Category
+          </span>
+          <div class="flex gap-2">
+            <span id="modalStatusTag" class="px-3 py-1 rounded-full text-xs font-semibold">
+              Status
+            </span>
+            <span id="modalArchivedTag" class="px-3 py-1 rounded-full text-xs font-semibold bg-red-500/15 border border-red-500/30 text-red-400 hidden">
+              Archived
+            </span>
+          </div>
+        </div>
+
+        <h3 id="modalTitle" class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Title</h3>
+
+        <div class="max-h-[30vh] overflow-y-auto pr-2 scrollbar-thin">
+          <p id="modalDescription" class="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">Description</p>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-[var(--border-color)]">
+          <span id="modalTimestamp" class="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
+            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+            Time
+          </span>
+
+          <span class="text-xs text-blue-500 font-bold flex items-center gap-1">
+            <i data-lucide="arrow-big-up-dash" class="w-4 h-4"></i>
+            <span id="modalVoteCount">0</span> votes
+          </span>
+        </div>
+
+        <!-- Administrative Actions block inside Modal -->
+        <div class="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-color)] justify-end items-center">
+          <button id="modalPendingBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500/15">
+            Pending
+          </button>
+          <button id="modalProgressBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-500 hover:bg-blue-500/15">
+            In Progress
+          </button>
+          <button id="modalResolveBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/15">
+            Resolve
+          </button>
+          <button id="modalArchiveBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 ml-2">
+            Archive
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- macOS Floating Dock Nav -->
+  <nav class="dock-nav glass-dock">
+    <a href="index.html" class="dock-item">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="plus" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Submit Feedback</span>
+    </a>
+    <a href="board.html" class="dock-item">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Public Board</span>
+    </a>
+    <a href="admin.html" class="dock-item active">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+        <i data-lucide="lock" class="w-5 h-5"></i>
+      </div>
+      <span class="tooltip">Admin Panel</span>
+    </a>
+  </nav>
+
+  <!-- Script Logic -->
+  <script>
+    let adminComplaints = [];
+    let adminPasscode = localStorage.getItem('adminPasscode') || '';
+
+    // Theme Switcher Logic
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (theme === 'dark') {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    });
+
+    // Handle authentication UI visibility
+    const loginOverlay = document.getElementById('loginOverlay');
+    const adminMainContent = document.getElementById('adminMainContent');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    async function checkAuth() {
+      if (!adminPasscode) {
+        showLogin();
+        return;
+      }
+      try {
+        const response = await fetch('/api/admin/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passcode: adminPasscode })
+        });
+        if (response.ok) {
+          hideLogin();
+          loadAdminData();
+        } else {
+          localStorage.removeItem('adminPasscode');
+          adminPasscode = '';
+          showLogin();
+        }
+      } catch (err) {
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      loginOverlay.classList.remove('hidden');
+      loginOverlay.classList.add('flex');
+      adminMainContent.classList.add('hidden');
+      logoutBtn.classList.add('hidden');
+    }
+
+    function hideLogin() {
+      loginOverlay.classList.add('hidden');
+      loginOverlay.classList.remove('flex');
+      adminMainContent.classList.remove('hidden');
+      logoutBtn.classList.remove('hidden');
+    }
+
+    // Login Form Submit Handlers
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('passcodeInput').value;
+      const errorEl = document.getElementById('loginError');
+
+      try {
+        const response = await fetch('/api/admin/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passcode: code })
+        });
+
+        if (response.ok) {
+          adminPasscode = code;
+          localStorage.setItem('adminPasscode', code);
+          errorEl.classList.add('hidden');
+          hideLogin();
+          loadAdminData();
+        } else {
+          errorEl.classList.remove('hidden');
+        }
+      } catch (err) {
+        errorEl.classList.remove('hidden');
+      }
+    });
+
+    // Logout Action
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('adminPasscode');
+      adminPasscode = '';
+      showLogin();
+    });
+
+    // Fetch administrative items
+    async function loadAdminData() {
+      try {
+        const response = await fetch('/api/complaints');
+        if (response.ok) {
+          adminComplaints = await response.json();
+          updateMetrics();
+          renderAdminList();
+        } else if (response.status === 401) {
+          // Passcode invalidated
+          logoutBtn.click();
+        }
+      } catch (err) {
+        console.error("Error loading complaints data", err);
+      }
+    }
+
+    // Update Top Counters
+    function updateMetrics() {
+      const active = adminComplaints.filter(c => !c.archived);
+      document.getElementById('metricTotal').textContent = active.length;
+      document.getElementById('metricPending').textContent = active.filter(c => c.status === 'Pending').length;
+      document.getElementById('metricProgress').textContent = active.filter(c => c.status === 'In Progress').length;
+      document.getElementById('metricResolved').textContent = active.filter(c => c.status === 'Resolved').length;
+    }
+
+    // Format Dates
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleString();
+    }
+
+    // Render Management List Items
+    function renderAdminList() {
+      const container = document.getElementById('adminComplaintsList');
+      const search = document.getElementById('adminSearchInput').value.toLowerCase();
+      const category = document.getElementById('adminCategorySelect').value;
+      const status = document.getElementById('adminStatusSelect').value;
+
+      let filtered = adminComplaints.filter(item => {
+        const matchesCategory = (category === 'all' || item.category === category);
+        
+        let matchesStatus = false;
+        if (status === 'all') {
+          matchesStatus = !item.archived; // show all active
+        } else if (status === 'Archived') {
+          matchesStatus = item.archived;
+        } else {
+          matchesStatus = (!item.archived && item.status === status);
+        }
+
+        const matchesSearch = item.title.toLowerCase().includes(search) || 
+                              item.description.toLowerCase().includes(search) ||
+                              item.subcategory.toLowerCase().includes(search);
+
+        return matchesCategory && matchesStatus && matchesSearch;
+      });
+
+      // Sort newest first by default in admin
+      filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="glass-panel p-10 text-center text-[var(--text-tertiary)] flex flex-col items-center justify-center">
+            <i data-lucide="inbox" class="w-10 h-10 mb-2"></i>
+            <p class="text-sm">No items matching criteria.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        let badgeClass = 'badge-status-pending';
+        if (item.status === 'In Progress') badgeClass = 'badge-status-inprogress';
+        if (item.status === 'Resolved') badgeClass = 'badge-status-resolved';
+
+        return `
+          <div class="glass-panel p-6 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center text-left relative overflow-hidden cursor-pointer hover:border-blue-500/30 transition-colors duration-300" id="card-${item.id}" onclick="openAdminDetail('${item.id}')">
+            <!-- Left Info Block -->
+            <div class="flex-1 space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500">
+                  ${item.category} &rsaquo; ${item.subcategory}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">
+                  ${item.status}
+                </span>
+                ${item.archived ? `
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/15 border border-red-500/30 text-red-400">
+                    Archived
+                  </span>
+                ` : ''}
+              </div>
+              <h3 class="text-lg font-bold">${item.title}</h3>
+              <p class="text-sm text-[var(--text-secondary)] line-clamp-3">${item.description}</p>
+              <div class="flex gap-4 text-xs text-[var(--text-tertiary)] pt-1">
+                <span>Submitted: ${formatDate(item.timestamp)}</span>
+                <span class="flex items-center gap-1 text-blue-500 font-bold">
+                  <i data-lucide="arrow-big-up-dash" class="w-3.5 h-3.5"></i>
+                  ${item.votes} votes
+                </span>
+              </div>
+            </div>
+
+            <!-- Action Controls Block -->
+            <div class="flex flex-wrap gap-2 w-full md:w-auto items-center md:border-l border-[var(--border-color)] md:pl-6 pt-4 md:pt-0" onclick="event.stopPropagation()">
+              <!-- Quick State Transitions -->
+              <button onclick="updateStatus('${item.id}', 'Pending')" class="px-3 py-2 text-xs font-bold rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500/15 ${item.status === 'Pending' ? 'ring-2 ring-amber-500/30' : ''}">
+                Pending
+              </button>
+              <button onclick="updateStatus('${item.id}', 'In Progress')" class="px-3 py-2 text-xs font-bold rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-500 hover:bg-blue-500/15 ${item.status === 'In Progress' ? 'ring-2 ring-blue-500/30' : ''}">
+                In Progress
+              </button>
+              <button onclick="updateStatus('${item.id}', 'Resolved')" class="px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/15 ${item.status === 'Resolved' ? 'ring-2 ring-emerald-500/30' : ''}">
+                Resolve
+              </button>
+              
+              <!-- Archive / Restore Action -->
+              <button onclick="toggleArchive('${item.id}', ${!item.archived})" class="px-3 py-2 text-xs font-bold rounded-lg border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 ml-auto md:ml-2">
+                ${item.archived ? 'Restore' : 'Archive'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Call update status endpoint
+    async function updateStatus(id, newStatus) {
+      try {
+        const response = await fetch(`/api/complaints/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Passcode': adminPasscode
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        if (response.ok) {
+          const updated = await response.json();
+          // Update local data and rerender
+          const index = adminComplaints.findIndex(c => c.id === id);
+          if (index !== -1) {
+            adminComplaints[index] = updated;
+            updateMetrics();
+            renderAdminList();
+            
+            // Sync modal if currently open
+            const modal = document.getElementById('adminDetailModal');
+            if (modal && modal.dataset.activeId === id) {
+              syncModalState(updated);
+            }
+          }
+        } else if (response.status === 401) {
+          logoutBtn.click();
+        }
+      } catch (err) {
+        console.error("Failed to update status", err);
+      }
+    }
+
+    // Toggle archiving status
+    async function toggleArchive(id, shouldArchive) {
+      try {
+        const response = await fetch(`/api/complaints/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Passcode': adminPasscode
+          },
+          body: JSON.stringify({ archived: shouldArchive })
+        });
+
+        if (response.ok) {
+          const updated = await response.json();
+          const index = adminComplaints.findIndex(c => c.id === id);
+          if (index !== -1) {
+            adminComplaints[index] = updated;
+            updateMetrics();
+            renderAdminList();
+            
+            // Sync modal if currently open
+            const modal = document.getElementById('adminDetailModal');
+            if (modal && modal.dataset.activeId === id) {
+              syncModalState(updated);
+            }
+          }
+        } else if (response.status === 401) {
+          logoutBtn.click();
+        }
+      } catch (err) {
+        console.error("Failed to toggle archive", err);
+      }
+    }
+
+    // Detail Modal Handlers for Admin Dashboard
+    function openAdminDetail(id) {
+      const item = adminComplaints.find(c => c.id === id);
+      if (!item) return;
+
+      const modal = document.getElementById('adminDetailModal');
+      modal.dataset.activeId = id;
+
+      document.getElementById('modalCategoryTag').textContent = `${item.category} \u203A ${item.subcategory}`;
+      document.getElementById('modalTitle').textContent = item.title;
+      document.getElementById('modalDescription').textContent = item.description;
+      document.getElementById('modalTimestamp').innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> ${formatDate(item.timestamp)}`;
+      document.getElementById('modalVoteCount').textContent = item.votes;
+
+      syncModalState(item);
+
+      // Bind actions inside modal
+      document.getElementById('modalPendingBtn').onclick = (e) => {
+        e.stopPropagation();
+        updateStatus(id, 'Pending');
+      };
+      document.getElementById('modalProgressBtn').onclick = (e) => {
+        e.stopPropagation();
+        updateStatus(id, 'In Progress');
+      };
+      document.getElementById('modalResolveBtn').onclick = (e) => {
+        e.stopPropagation();
+        updateStatus(id, 'Resolved');
+      };
+      document.getElementById('modalArchiveBtn').onclick = (e) => {
+        e.stopPropagation();
+        toggleArchive(id, !item.archived);
+      };
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeAdminDetail() {
+      const modal = document.getElementById('adminDetailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function syncModalState(item) {
+      const statusTag = document.getElementById('modalStatusTag');
+      statusTag.textContent = item.status;
+      statusTag.className = 'px-3 py-1 rounded-full text-xs font-semibold';
+      if (item.status === 'Pending') statusTag.classList.add('badge-status-pending');
+      else if (item.status === 'In Progress') statusTag.classList.add('badge-status-inprogress');
+      else if (item.status === 'Resolved') statusTag.classList.add('badge-status-resolved');
+
+      const archiveTag = document.getElementById('modalArchivedTag');
+      if (item.archived) {
+        archiveTag.classList.remove('hidden');
+      } else {
+        archiveTag.classList.add('hidden');
+      }
+
+      const archiveBtn = document.getElementById('modalArchiveBtn');
+      archiveBtn.textContent = item.archived ? 'Restore' : 'Archive';
+
+      // Reset state indicators on status buttons
+      const pendingBtn = document.getElementById('modalPendingBtn');
+      const progressBtn = document.getElementById('modalProgressBtn');
+      const resolveBtn = document.getElementById('modalResolveBtn');
+
+      [pendingBtn, progressBtn, resolveBtn].forEach(btn => btn.classList.remove('ring-2', 'ring-amber-500/30', 'ring-blue-500/30', 'ring-emerald-500/30'));
+      if (item.status === 'Pending') pendingBtn.classList.add('ring-2', 'ring-amber-500/30');
+      if (item.status === 'In Progress') progressBtn.classList.add('ring-2', 'ring-blue-500/30');
+      if (item.status === 'Resolved') resolveBtn.classList.add('ring-2', 'ring-emerald-500/30');
+    }
+
+    // Event Bindings for inputs
+    document.getElementById('adminSearchInput').addEventListener('input', renderAdminList);
+    document.getElementById('adminCategorySelect').addEventListener('change', renderAdminList);
+    document.getElementById('adminStatusSelect').addEventListener('change', renderAdminList);
+
+    // Run Auth Verification
+    checkAuth();
+  </script>
+</body>
+</html>
+
