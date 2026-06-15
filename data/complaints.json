@@ -5,8 +5,8 @@
     "category": "Infrastructure",
     "subcategory": "Classrooms",
     "description": "The projector in room 302 of the MVJ block has a distorted blue tint and flickering bulb. Please check this.",
-    "status": "Resolved",
-    "progressPercent": 100,
+    "status": "Pending",
+    "progressPercent": 0,
     "assignedDepartment": "Estate & Infrastructure Maintenance",
     "votes": 3,
     "archived": false,
@@ -31,11 +31,25 @@
     "category": "Hostel",
     "subcategory": "Mess Food",
     "description": "The plates are often damp, and fly screens are missing near the serving area. Student health is at risk. Please schedule a food quality and hygiene audit.",
-    "status": "In Progress",
-    "progressPercent": 40,
+    "status": "Pending",
+    "progressPercent": 0,
     "assignedDepartment": "Hostel Management & Warden",
     "votes": 12,
     "archived": false,
     "timestamp": "2026-06-15T09:46:00.572Z"
+  },
+  {
+    "id": "cebaa1bc-5c39-4bb1-8f2c-aa43e89b411f",
+    "title": "Projector screen missing",
+    "category": "Infrastructure",
+    "subcategory": "Classrooms",
+    "description": "The projector screen is missing at the room number 48",
+    "image": null,
+    "status": "Pending",
+    "progressPercent": 0,
+    "assignedDepartment": null,
+    "votes": 0,
+    "archived": false,
+    "timestamp": "2026-06-15T18:02:52.782Z"
   }
 ]

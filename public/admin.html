@@ -527,6 +527,7 @@
           
           if (currentTab === 'gallery') {
             renderAdminList();
+            filterAdminList();
           } else {
             renderAnalytics();
           }
@@ -568,6 +569,7 @@
         tabContentGallery.classList.remove('hidden');
         tabContentAnalytics.classList.add('hidden');
         renderAdminList();
+        filterAdminList();
       } else {
         tabAnalyticsBtn.className = 'px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-blue-600 bg-blue-600 text-white transition-all shadow-md flex items-center gap-1.5';
         tabGalleryBtn.className = 'px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] text-[var(--text-primary)] transition-all flex items-center gap-1.5';
@@ -580,46 +582,20 @@
     tabGalleryBtn.addEventListener('click', () => switchTab('gallery'));
     tabAnalyticsBtn.addEventListener('click', () => switchTab('analytics'));
 
-    // Render Gallery cards
+    // Render Gallery cards (pre-renders all cards, sorted by timestamp descending)
     function renderAdminList() {
       const container = document.getElementById('adminComplaintsList');
-      const search = document.getElementById('adminSearchInput').value.toLowerCase();
-      const category = document.getElementById('adminCategorySelect').value;
-      const status = document.getElementById('adminStatusSelect').value;
+      
+      const sorted = [...adminComplaints].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-      let filtered = adminComplaints.filter(item => {
-        const matchesCategory = (category === 'all' || item.category === category);
-        
-        let matchesStatus = false;
-        if (status === 'all') {
-          matchesStatus = !item.archived;
-        } else if (status === 'Archived') {
-          matchesStatus = item.archived;
-        } else {
-          matchesStatus = (!item.archived && item.status === status);
-        }
+      const emptyMessageHTML = `
+        <div id="adminEmptyMessage" class="col-span-full glass-panel p-12 text-center text-[var(--text-tertiary)] flex flex-col items-center justify-center hidden">
+          <i data-lucide="package-open" class="w-10 h-10 mb-2"></i>
+          <p class="text-sm font-semibold">No issues matching this filter found.</p>
+        </div>
+      `;
 
-        const matchesSearch = item.title.toLowerCase().includes(search) || 
-                              item.description.toLowerCase().includes(search) ||
-                              item.subcategory.toLowerCase().includes(search);
-
-        return matchesCategory && matchesStatus && matchesSearch;
-      });
-
-      filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-      if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full glass-panel p-12 text-center text-[var(--text-tertiary)] flex flex-col items-center justify-center">
-            <i data-lucide="package-open" class="w-10 h-10 mb-2"></i>
-            <p class="text-sm font-semibold">No issues matching this filter found.</p>
-          </div>
-        `;
-        if (typeof lucide !== 'undefined') lucide.createIcons({ node: container });
-        return;
-      }
-
-      container.innerHTML = filtered.map(item => {
+      const cardsHTML = sorted.map(item => {
         let badgeClass = 'badge-status-pending';
         if (item.status === 'In Progress') badgeClass = 'badge-status-inprogress';
         if (item.status === 'Resolved') badgeClass = 'badge-status-resolved';
@@ -627,7 +603,7 @@
         const progressPercent = item.progressPercent || 0;
 
         return `
-          <div class="glass-panel p-5 flex flex-col justify-between text-left relative overflow-hidden cursor-pointer hover:border-blue-500/35 hover:shadow-lg transition-all duration-300" id="card-${item.id}" onclick="openAdminDetail('${item.id}')">
+          <div class="complaint-card glass-panel p-5 flex flex-col justify-between text-left relative overflow-hidden cursor-pointer hover:border-blue-500/35 hover:shadow-lg transition-all duration-300" id="card-${item.id}" data-id="${item.id}" onclick="openAdminDetail('${item.id}')">
             <div>
               <div class="flex justify-between items-start mb-3">
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500 max-w-[150px] truncate">
@@ -645,7 +621,7 @@
               <div class="relative mb-4 rounded-xl overflow-hidden border border-[var(--border-color)] aspect-video bg-white/5 dark:bg-black/20 flex items-center justify-center">
                 ${item.image ? `
                   <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]" />
-                  <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold gap-1" onclick="event.stopPropagation(); openLightbox('${item.image}', '${item.timestamp}', \`${item.title.replace(/'/g, "\\'")}\`)">
+                  <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold gap-1" onclick="event.stopPropagation(); openLightbox('${item.id}')">
                     <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
                     <span>Zoom Image</span>
                   </div>
@@ -701,7 +677,56 @@
         `;
       }).join('');
 
+      container.innerHTML = emptyMessageHTML + cardsHTML;
+
       if (typeof lucide !== 'undefined') lucide.createIcons({ node: container });
+    }
+
+    // Filter Gallery cards dynamically using CSS classes for fast performance
+    function filterAdminList() {
+      const search = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+      const category = document.getElementById('adminCategorySelect').value;
+      const status = document.getElementById('adminStatusSelect').value;
+
+      const cards = document.querySelectorAll('.complaint-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const id = card.dataset.id;
+        const item = adminComplaints.find(c => c.id === id);
+        if (!item) return;
+
+        const matchesCategory = (category === 'all' || item.category === category);
+        
+        let matchesStatus = false;
+        if (status === 'all') {
+          matchesStatus = !item.archived;
+        } else if (status === 'Archived') {
+          matchesStatus = item.archived;
+        } else {
+          matchesStatus = (!item.archived && item.status === status);
+        }
+
+        const matchesSearch = item.title.toLowerCase().includes(search) || 
+                              item.description.toLowerCase().includes(search) ||
+                              item.subcategory.toLowerCase().includes(search);
+
+        if (matchesCategory && matchesStatus && matchesSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      const emptyMessage = document.getElementById('adminEmptyMessage');
+      if (emptyMessage) {
+        if (visibleCount === 0) {
+          emptyMessage.classList.remove('hidden');
+        } else {
+          emptyMessage.classList.add('hidden');
+        }
+      }
     }
 
     // Render Analytics Dashboard
@@ -761,7 +786,7 @@
             </div>
 
             ${highestVoted.image ? `
-              <div class="relative rounded-xl overflow-hidden border border-[var(--border-color)] max-h-40 aspect-video w-full max-w-sm cursor-zoom-in" onclick="openLightbox('${highestVoted.image}', '${highestVoted.timestamp}', \`${highestVoted.title.replace(/'/g, "\\'")}\`)">
+              <div class="relative rounded-xl overflow-hidden border border-[var(--border-color)] max-h-40 aspect-video w-full max-w-sm cursor-zoom-in" onclick="openLightbox('${highestVoted.id}')">
                 <img src="${highestVoted.image}" alt="${highestVoted.title}" class="w-full h-full object-cover" />
               </div>
             ` : ''}
@@ -936,7 +961,7 @@
         modalImage.src = item.image;
         modalImageContainer.classList.remove('hidden');
         modalImageContainer.onclick = () => {
-          openLightbox(item.image, item.timestamp, item.title);
+          openLightbox(item.id);
         };
       } else {
         modalImage.src = '';
@@ -1214,13 +1239,13 @@
 
     // Event Bindings for inputs
     document.getElementById('adminSearchInput').addEventListener('input', () => {
-      if (currentTab === 'gallery') renderAdminList();
+      if (currentTab === 'gallery') filterAdminList();
     });
     document.getElementById('adminCategorySelect').addEventListener('change', () => {
-      if (currentTab === 'gallery') renderAdminList();
+      if (currentTab === 'gallery') filterAdminList();
     });
     document.getElementById('adminStatusSelect').addEventListener('change', () => {
-      if (currentTab === 'gallery') renderAdminList();
+      if (currentTab === 'gallery') filterAdminList();
     });
 
     // Run Auth Verification
@@ -1366,17 +1391,20 @@
 
   <script>
     // Lightbox Control Functions
-    function openLightbox(imgSrc, timestamp, title) {
+    function openLightbox(id) {
+      const item = adminComplaints.find(c => c.id === id);
+      if (!item || !item.image) return;
+
       const lightbox = document.getElementById('lightboxOverlay');
       const lightboxImg = document.getElementById('lightboxImage');
       const lightboxTitle = document.getElementById('lightboxTitle');
       const lightboxTime = document.getElementById('lightboxTime');
       const lightboxElapsed = document.getElementById('lightboxElapsed');
 
-      lightboxImg.src = imgSrc;
-      lightboxTitle.textContent = title;
+      lightboxImg.src = item.image;
+      lightboxTitle.textContent = item.title;
       
-      const uploadedDate = new Date(timestamp);
+      const uploadedDate = new Date(item.timestamp);
       lightboxTime.innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-400"></i> Uploaded: ${uploadedDate.toLocaleString()}`;
       
       const calculateElapsed = () => {
