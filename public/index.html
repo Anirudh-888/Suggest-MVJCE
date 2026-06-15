@@ -26,7 +26,7 @@
         <i data-lucide="archive-restore"></i>
       </div>
       <div>
-        <h1 class="text-xl font-bold tracking-tight">Anonym<span class="text-gradient">Box</span></h1>
+        <h1 class="text-xl font-bold tracking-tight">Suggest<span class="text-gradient">MVJCE</span></h1>
         <p class="text-xs text-[var(--text-secondary)]">MVJ College of Engineering</p>
       </div>
     </div>
@@ -44,9 +44,9 @@
     <div class="flex justify-between items-center mb-8 border-b border-[var(--border-color)] pb-4 -mx-6 md:-mx-10 px-6 md:px-10">
       <!-- Window Dots -->
       <div class="flex gap-2">
-        <span class="mac-dot bg-[#ff5f56]"></span>
-        <span class="mac-dot bg-[#ffbd2e]"></span>
-        <span class="mac-dot bg-[#27c93f]"></span>
+        <button type="button" class="mac-dot bg-[#ff5f56]" id="windowBtnClose" title="Close Window"></button>
+        <button type="button" class="mac-dot bg-[#ffbd2e]" id="windowBtnMinimize" title="Minimize Window"></button>
+        <button type="button" class="mac-dot bg-[#27c93f]" id="windowBtnMaximize" title="Maximize Window"></button>
       </div>
       <!-- URL Address Bar -->
       <div class="address-bar">
@@ -136,7 +136,7 @@
   <nav class="dock-nav glass-dock">
     <!-- Trigger Button -->
     <div class="dock-trigger">
-      <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xl hover:scale-105 transition-transform duration-300">
+      <div class="w-14 h-14 rounded-[18px] glass-nav-btn btn-nav-compass flex items-center justify-center shadow-xl hover:scale-105 transition-transform duration-300">
         <i data-lucide="compass" class="w-6 h-6 nav-compass-icon"></i>
       </div>
       <span class="tooltip">Navigation</span>
@@ -145,20 +145,20 @@
     <!-- Pop-out menu items -->
     <div class="dock-items">
       <a href="index.html" class="dock-item active">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
-          <i data-lucide="plus" class="w-5 h-5"></i>
+        <div class="w-12 h-12 rounded-[14px] glass-nav-btn btn-nav-feedback flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300">
+          <i data-lucide="square-pen" class="w-5 h-5"></i>
         </div>
         <span class="tooltip">Submit Feedback</span>
       </a>
       <a href="board.html" class="dock-item">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
-          <i data-lucide="message-square" class="w-5 h-5"></i>
+        <div class="w-12 h-12 rounded-[14px] glass-nav-btn btn-nav-board flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300">
+          <i data-lucide="messages-square" class="w-5 h-5"></i>
         </div>
         <span class="tooltip">Public Board</span>
       </a>
       <a href="admin.html" class="dock-item">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
-          <i data-lucide="lock" class="w-5 h-5"></i>
+        <div class="w-12 h-12 rounded-[14px] glass-nav-btn btn-nav-admin flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300">
+          <i data-lucide="sliders" class="w-5 h-5"></i>
         </div>
         <span class="tooltip">Admin Panel</span>
       </a>
@@ -269,8 +269,70 @@
       successOverlay.classList.remove('flex');
     });
 
+    // macOS window dots controls
+    const closeBtn = document.getElementById('windowBtnClose');
+    const minimizeBtn = document.getElementById('windowBtnMinimize');
+    const maximizeBtn = document.getElementById('windowBtnMaximize');
+    const mainEl = document.querySelector('main');
+    const restoreContainer = document.getElementById('restoreWindowContainer');
+    const restoreBtn = document.getElementById('restoreWindowBtn');
+
+    if (closeBtn && mainEl) {
+      closeBtn.addEventListener('click', () => {
+        mainEl.classList.add('window-closed');
+        if (restoreContainer) {
+          restoreContainer.classList.remove('hidden');
+          restoreContainer.classList.add('flex');
+        }
+      });
+    }
+
+    if (restoreBtn && mainEl && restoreContainer) {
+      restoreBtn.addEventListener('click', () => {
+        mainEl.classList.remove('window-closed');
+        restoreContainer.classList.add('hidden');
+        restoreContainer.classList.remove('flex');
+      });
+    }
+
+    if (minimizeBtn && mainEl) {
+      minimizeBtn.addEventListener('click', () => {
+        mainEl.classList.toggle('minimized');
+      });
+      
+      const addressBar = document.querySelector('.address-bar');
+      if (addressBar) {
+        addressBar.addEventListener('click', () => {
+          if (mainEl.classList.contains('minimized')) {
+            mainEl.classList.remove('minimized');
+          }
+        });
+        addressBar.style.cursor = 'pointer';
+      }
+    }
+
+    if (maximizeBtn && mainEl) {
+      maximizeBtn.addEventListener('click', () => {
+        mainEl.classList.toggle('maximized');
+      });
+    }
+
     // Initialize Lucide Icons
     lucide.createIcons();
   </script>
+
+  <!-- Restore Window Floating Widget -->
+  <div id="restoreWindowContainer" class="hidden fixed inset-0 flex items-center justify-center z-[90]">
+    <div class="glass-panel p-6 text-center animate-scale-up max-w-xs border border-[var(--border-color)]">
+      <div class="w-12 h-12 rounded-full bg-blue-500/10 text-blue-500 mx-auto flex items-center justify-center mb-4 border border-blue-500/20">
+        <i data-lucide="maximize-2" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-lg font-bold mb-2">Window Closed</h3>
+      <p class="text-xs text-[var(--text-secondary)] mb-4">You closed the submission panel.</p>
+      <button id="restoreWindowBtn" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-md">
+        Restore Window
+      </button>
+    </div>
+  </div>
 </body>
 </html>
