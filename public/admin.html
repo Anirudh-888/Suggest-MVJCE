@@ -218,12 +218,12 @@
 
   <!-- macOS Detail Popup Modal for Admin -->
   <div id="adminDetailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[120] p-4 animate-fade-in" onclick="closeAdminDetail()">
-    <div class="glass-panel max-w-lg w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
+    <div id="adminDetailModalCard" class="glass-panel max-w-lg w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
       <!-- macOS Style window dots -->
-      <div class="flex gap-1.5 absolute top-6 left-6">
+      <div class="flex gap-1.5 absolute top-6 left-6 modal-keep-minimized">
         <button onclick="closeAdminDetail()" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" title="Close"></button>
-        <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-60"></div>
-        <div class="w-3 h-3 rounded-full bg-green-500 opacity-60"></div>
+        <button id="modalBtnMinimize" class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer" title="Minimize"></button>
+        <button id="modalBtnMaximize" class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer" title="Maximize"></button>
       </div>
 
       <!-- Close icon (top right) -->
@@ -247,7 +247,7 @@
           </div>
         </div>
 
-        <h3 id="modalTitle" class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Title</h3>
+        <h3 id="modalTitle" class="text-2xl font-bold tracking-tight text-[var(--text-primary)] modal-keep-minimized">Title</h3>
 
         <div class="max-h-[25vh] overflow-y-auto pr-2 scrollbar-thin">
           <p id="modalDescription" class="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">Description</p>
@@ -917,6 +917,9 @@
       if (!item) return;
 
       const modal = document.getElementById('adminDetailModal');
+      const card = document.getElementById('adminDetailModalCard');
+      card.classList.remove('modal-minimized-card', 'modal-maximized-card');
+      modal.classList.remove('modal-minimized-overlay');
       modal.dataset.activeId = id;
 
       document.getElementById('modalCategoryTag').textContent = `${item.category} \u203A ${item.subcategory}`;
@@ -1113,6 +1116,9 @@
       deptTemplate.value = 'custom';
       deptMessage.value = '';
 
+      const card = document.getElementById('contactDeptModalCard');
+      card.classList.remove('modal-minimized-card', 'modal-maximized-card');
+      contactDeptModal.classList.remove('modal-minimized-overlay');
       contactDeptModal.classList.remove('hidden');
       contactDeptModal.classList.add('flex');
       lucide.createIcons();
@@ -1269,6 +1275,68 @@
         mainEl.classList.toggle('maximized');
       });
     }
+
+    // Modal minimize/maximize handlers
+    function toggleModalMinimize(modalType) {
+      const overlay = document.getElementById(modalType === 'detail' ? 'adminDetailModal' : 'contactDeptModal');
+      const card = document.getElementById(modalType === 'detail' ? 'adminDetailModalCard' : 'contactDeptModalCard');
+      
+      if (card.classList.contains('modal-minimized-card')) {
+        card.classList.remove('modal-minimized-card');
+        overlay.classList.remove('modal-minimized-overlay');
+      } else {
+        card.classList.remove('modal-maximized-card');
+        card.classList.add('modal-minimized-card');
+        overlay.classList.add('modal-minimized-overlay');
+      }
+    }
+
+    function toggleModalMaximize(modalType) {
+      const overlay = document.getElementById(modalType === 'detail' ? 'adminDetailModal' : 'contactDeptModal');
+      const card = document.getElementById(modalType === 'detail' ? 'adminDetailModalCard' : 'contactDeptModalCard');
+      
+      if (card.classList.contains('modal-maximized-card')) {
+        card.classList.remove('modal-maximized-card');
+      } else {
+        card.classList.remove('modal-minimized-card');
+        overlay.classList.remove('modal-minimized-overlay');
+        card.classList.add('modal-maximized-card');
+      }
+    }
+
+    // Bind dots buttons click handlers
+    document.getElementById('modalBtnMinimize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleModalMinimize('detail');
+    });
+    document.getElementById('modalBtnMaximize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleModalMaximize('detail');
+    });
+    document.getElementById('contactBtnMinimize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleModalMinimize('contact');
+    });
+    document.getElementById('contactBtnMaximize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleModalMaximize('contact');
+    });
+
+    // Clicking minimized card restores it
+    document.getElementById('adminDetailModalCard').addEventListener('click', (e) => {
+      const card = document.getElementById('adminDetailModalCard');
+      if (card.classList.contains('modal-minimized-card')) {
+        if (e.target.closest('button')) return;
+        toggleModalMinimize('detail');
+      }
+    });
+    document.getElementById('contactDeptModalCard').addEventListener('click', (e) => {
+      const card = document.getElementById('contactDeptModalCard');
+      if (card.classList.contains('modal-minimized-card')) {
+        if (e.target.closest('button')) return;
+        toggleModalMinimize('contact');
+      }
+    });
   </script>
 
   <!-- Restore Window Floating Widget -->
@@ -1352,18 +1420,18 @@
   </script>
   <!-- Contact Department Modal Overlay -->
   <div id="contactDeptModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden items-center justify-center z-[130] p-4">
-    <div class="glass-panel max-w-md w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
+    <div id="contactDeptModalCard" class="glass-panel max-w-md w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
       <!-- macOS window controls mock -->
-      <div class="flex gap-1.5 absolute top-6 left-6">
+      <div class="flex gap-1.5 absolute top-6 left-6 modal-keep-minimized">
         <button onclick="closeContactDeptModal()" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" title="Cancel"></button>
-        <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-60"></div>
-        <div class="w-3 h-3 rounded-full bg-green-500 opacity-60"></div>
+        <button id="contactBtnMinimize" class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer" title="Minimize"></button>
+        <button id="contactBtnMaximize" class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer" title="Maximize"></button>
       </div>
       <button onclick="closeContactDeptModal()" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
       
-      <h3 class="text-xl font-bold tracking-tight mb-2 mt-4 text-[var(--text-primary)]">Contact & Forward Department</h3>
+      <h3 id="contactModalTitle" class="text-xl font-bold tracking-tight mb-2 mt-4 text-[var(--text-primary)] modal-keep-minimized">Contact & Forward Department</h3>
       <p class="text-xs text-[var(--text-secondary)] mb-6">Forward the selected anonymous suggestion to the relevant college authority for quick resolution.</p>
       
       <form id="contactDeptForm" class="space-y-4">

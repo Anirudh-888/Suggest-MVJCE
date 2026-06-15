@@ -708,4 +708,188 @@ input[type="range"]::-moz-range-thumb:hover {
     0 24px 64px rgba(0, 0, 0, 0.5) !important;
 }
 
+/* --- Interactive macOS Window Controls Styling --- */
+
+main, #adminMainContent {
+  transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              gap 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+main.minimized, #adminMainContent.minimized {
+  max-height: 52px !important;
+  overflow: hidden !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  gap: 0 !important;
+}
+
+main.minimized > *:not(:first-child), #adminMainContent.minimized > *:not(:first-child) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+main.maximized, #adminMainContent.maximized {
+  max-width: 98vw !important;
+  width: 98vw !important;
+  min-height: 88vh !important;
+}
+
+/* Modals custom window styles */
+#adminDetailModalCard, #contactDeptModalCard {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.modal-minimized-overlay {
+  background: rgba(0,0,0,0) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: none !important;
+}
+
+.modal-minimized-card {
+  pointer-events: auto !important;
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  left: auto !important;
+  top: auto !important;
+  width: 340px !important;
+  max-width: 340px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  transform: none !important;
+  padding: 14px 16px 14px 64px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
+  cursor: pointer;
+  border-radius: 16px !important;
+  border: 1px solid var(--border-color-hover) !important;
+  background: var(--bg-card-hover) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+
+.modal-minimized-card > *:not(.modal-keep-minimized) {
+  display: none !important;
+}
+
+.modal-minimized-card #modalTitle, 
+.modal-minimized-card #contactModalTitle {
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  position: absolute !important;
+  left: 64px !important;
+  top: 15px !important;
+  right: 16px !important;
+  line-height: 1.5 !important;
+  color: var(--text-primary) !important;
+}
+
+.modal-maximized-card {
+  max-width: 95vw !important;
+  width: 920px !important;
+  height: 88vh !important;
+  max-height: 88vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.modal-maximized-card .mt-6 {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.modal-maximized-card .scrollbar-thin {
+  max-height: none !important;
+  flex: 1 !important;
+}
+
+/* macOS control dot symbol on hover */
+.mac-dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mac-dot::before {
+  content: '';
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  line-height: 1;
+}
+.flex:hover .mac-dot::before {
+  opacity: 1;
+}
+.mac-dot.bg-\[\#ff5f56\]::before {
+  content: '×';
+  font-size: 9px;
+  margin-top: -1px;
+}
+.mac-dot.bg-\[\#ffbd2e\]::before {
+  content: '–';
+  font-size: 9px;
+  margin-top: -1px;
+}
+.mac-dot.bg-\[\#27c93f\]::before {
+  content: '+';
+  font-size: 8px;
+}
+
+/* Modals window dots too */
+#adminDetailModalCard .flex button::before,
+#contactDeptModalCard .flex button::before {
+  content: '';
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+#adminDetailModalCard .flex:hover button::before,
+#contactDeptModalCard .flex:hover button::before {
+  opacity: 1;
+}
+#adminDetailModalCard .flex button.bg-red-500::before,
+#contactDeptModalCard .flex button.bg-red-500::before {
+  content: '×';
+  font-size: 9px;
+  margin-top: -1px;
+}
+#adminDetailModalCard .flex button.bg-yellow-500::before,
+#contactDeptModalCard .flex button.bg-yellow-500::before {
+  content: '–';
+  font-size: 9px;
+  margin-top: -1px;
+}
+#adminDetailModalCard .flex button.bg-green-500::before,
+#contactDeptModalCard .flex button.bg-green-500::before {
+  content: '+';
+  font-size: 8px;
+}
+
+
 
