@@ -593,21 +593,41 @@ input, textarea, select {
   transition: all 0.25s ease;
 }
 
+/* Custom dropdown chevron arrow for select elements */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234a4a52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 16px !important;
+  padding-right: 40px !important;
+}
+
 [data-theme="dark"] input, 
 [data-theme="dark"] textarea, 
 [data-theme="dark"] select {
   background: rgba(0, 0, 0, 0.25) !important;
 }
 
+[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23b0b0bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+}
+
 /* Explicit Legible Dropdown Options styling */
 select option {
-  background-color: #ffffff;
-  color: #111116;
+  background-color: #ffffff !important;
+  color: #111116 !important;
 }
 
 [data-theme="dark"] select option {
-  background-color: #161622;
-  color: #ffffff;
+  background-color: #161622 !important;
+  color: #ffffff !important;
+}
+
+select option:disabled {
+  color: #888888 !important;
 }
 
 input::placeholder, textarea::placeholder {

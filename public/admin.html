@@ -353,7 +353,7 @@
 
   <!-- Script Logic -->
   <script>
-    const API_BASE = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3000')) ? 'http://localhost:3000' : '';
+    const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
     let adminComplaints = [];
     let adminPasscode = (localStorage.getItem('adminPasscode') || '').trim();
     let pollInterval = null;
@@ -662,13 +662,13 @@
               
               <!-- Quick State Transitions -->
               <div class="flex items-center gap-1">
-                <button onclick="updateStatus('${item.id}', 'Pending')" class="px-2 py-1 text-[9px] font-bold rounded bg-amber-500/5 hover:bg-amber-500/15 text-amber-500 border border-amber-500/10 ${item.status === 'Pending' ? 'ring-1 ring-amber-500/30' : ''}" title="Mark Pending">
+                <button onclick="updateStatus('${item.id}', 'Pending')" class="px-2 py-1 text-[9px] font-bold rounded transition-all ${item.status === 'Pending' ? 'bg-amber-500 text-white border border-amber-600 shadow-sm shadow-amber-500/20' : 'bg-amber-500/5 hover:bg-amber-500/15 text-amber-500 border border-amber-500/10'}" title="Mark Pending">
                   P
                 </button>
-                <button onclick="updateStatus('${item.id}', 'In Progress')" class="px-2 py-1 text-[9px] font-bold rounded bg-blue-500/5 hover:bg-blue-500/15 text-blue-500 border border-blue-500/10 ${item.status === 'In Progress' ? 'ring-1 ring-blue-500/30' : ''}" title="Mark In Progress">
+                <button onclick="updateStatus('${item.id}', 'In Progress')" class="px-2 py-1 text-[9px] font-bold rounded transition-all ${item.status === 'In Progress' ? 'bg-blue-600 text-white border border-blue-700 shadow-sm shadow-blue-500/20' : 'bg-blue-500/5 hover:bg-blue-500/15 text-blue-500 border border-blue-500/10'}" title="Mark In Progress">
                   IP
                 </button>
-                <button onclick="updateStatus('${item.id}', 'Resolved')" class="px-2 py-1 text-[9px] font-bold rounded bg-emerald-500/5 hover:bg-emerald-500/15 text-emerald-500 border border-emerald-500/10 ${item.status === 'Resolved' ? 'ring-1 ring-emerald-500/30' : ''}" title="Mark Resolved">
+                <button onclick="updateStatus('${item.id}', 'Resolved')" class="px-2 py-1 text-[9px] font-bold rounded transition-all ${item.status === 'Resolved' ? 'bg-emerald-600 text-white border border-emerald-700 shadow-sm shadow-emerald-500/20' : 'bg-emerald-500/5 hover:bg-emerald-500/15 text-emerald-500 border border-emerald-500/10'}" title="Mark Resolved">
                   R
                 </button>
               </div>
@@ -1046,10 +1046,18 @@
       const progressBtn = document.getElementById('modalProgressBtn');
       const resolveBtn = document.getElementById('modalResolveBtn');
 
-      [pendingBtn, progressBtn, resolveBtn].forEach(btn => btn.classList.remove('ring-2', 'ring-amber-500/30', 'ring-blue-500/30', 'ring-emerald-500/30'));
-      if (item.status === 'Pending') pendingBtn.classList.add('ring-2', 'ring-amber-500/30');
-      if (item.status === 'In Progress') progressBtn.classList.add('ring-2', 'ring-blue-500/30');
-      if (item.status === 'Resolved') resolveBtn.classList.add('ring-2', 'ring-emerald-500/30');
+      // Reset styles to default inactive state
+      pendingBtn.className = "px-3 py-2 text-xs font-bold rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500/15 transition-all";
+      progressBtn.className = "px-3 py-2 text-xs font-bold rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-500 hover:bg-blue-500/15 transition-all";
+      resolveBtn.className = "px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/15 transition-all";
+
+      if (item.status === 'Pending') {
+        pendingBtn.className = "px-3 py-2 text-xs font-bold rounded-lg border border-amber-500 bg-amber-500 text-white shadow-md shadow-amber-500/20 transition-all";
+      } else if (item.status === 'In Progress') {
+        progressBtn.className = "px-3 py-2 text-xs font-bold rounded-lg border border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-500/20 transition-all";
+      } else if (item.status === 'Resolved') {
+        resolveBtn.className = "px-3 py-2 text-xs font-bold rounded-lg border border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-500/20 transition-all";
+      }
     }
 
     // Slider range change binding
