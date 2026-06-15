@@ -294,7 +294,7 @@
             <p class="text-sm font-medium">No active suggestions found for this criteria.</p>
           </div>
         `;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons({ node: grid });
         return;
       }
 
@@ -351,7 +351,7 @@
         `;
       }).join('');
 
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: grid });
     }
 
     // Upvoting API Handler
@@ -437,7 +437,7 @@
 
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: card });
     }
 
     function closeDetail() {
@@ -643,7 +643,7 @@
 
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: lightbox });
     }
 
     function closeLightbox() {

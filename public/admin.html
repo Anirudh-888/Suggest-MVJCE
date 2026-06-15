@@ -615,7 +615,7 @@
             <p class="text-sm font-semibold">No issues matching this filter found.</p>
           </div>
         `;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons({ node: container });
         return;
       }
 
@@ -701,7 +701,7 @@
         `;
       }).join('');
 
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: container });
     }
 
     // Render Analytics Dashboard
@@ -717,7 +717,7 @@
           </div>
         `;
         statsCategoriesContainer.innerHTML = `<p class="text-xs text-[var(--text-tertiary)] text-center py-10">No data available</p>`;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons({ node: document.getElementById('tabContentAnalytics') });
         return;
       }
 
@@ -837,7 +837,7 @@
         `;
       }).join('');
 
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: document.getElementById('tabContentAnalytics') });
     }
 
     // Call update status endpoint
@@ -966,7 +966,7 @@
 
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: document.getElementById('adminDetailModalCard') });
     }
 
     function closeAdminDetail() {
@@ -1119,7 +1119,7 @@
 
       contactDeptModal.classList.remove('hidden');
       contactDeptModal.classList.add('flex');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: contactDeptModal });
     }
 
     function closeContactDeptModal() {
@@ -1204,7 +1204,7 @@
       `;
 
       container.appendChild(toast);
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: toast });
 
       setTimeout(() => {
         toast.classList.add('opacity-0', '-translate-y-2');
@@ -1397,7 +1397,7 @@
 
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons({ node: lightbox });
     }
 
     function closeLightbox() {
