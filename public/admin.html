@@ -215,24 +215,35 @@
 
   <!-- macOS Floating Dock Nav -->
   <nav class="dock-nav glass-dock">
-    <a href="index.html" class="dock-item">
-      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
-        <i data-lucide="plus" class="w-5 h-5"></i>
+    <!-- Trigger Button -->
+    <div class="dock-trigger">
+      <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xl hover:scale-105 transition-transform duration-300">
+        <i data-lucide="compass" class="w-6 h-6 nav-compass-icon"></i>
       </div>
-      <span class="tooltip">Submit Feedback</span>
-    </a>
-    <a href="board.html" class="dock-item">
-      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
-        <i data-lucide="message-square" class="w-5 h-5"></i>
-      </div>
-      <span class="tooltip">Public Board</span>
-    </a>
-    <a href="admin.html" class="dock-item active">
-      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
-        <i data-lucide="lock" class="w-5 h-5"></i>
-      </div>
-      <span class="tooltip">Admin Panel</span>
-    </a>
+      <span class="tooltip">Navigation</span>
+    </div>
+
+    <!-- Pop-out menu items -->
+    <div class="dock-items">
+      <a href="index.html" class="dock-item">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+        </div>
+        <span class="tooltip">Submit Feedback</span>
+      </a>
+      <a href="board.html" class="dock-item">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+          <i data-lucide="message-square" class="w-5 h-5"></i>
+        </div>
+        <span class="tooltip">Public Board</span>
+      </a>
+      <a href="admin.html" class="dock-item active">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
+          <i data-lucide="lock" class="w-5 h-5"></i>
+        </div>
+        <span class="tooltip">Admin Panel</span>
+      </a>
+    </div>
   </nav>
 
   <!-- Script Logic -->

@@ -180,10 +180,64 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-50%) translateY(100px);
   z-index: 100;
   display: flex;
-  gap: 12px;
-  padding: 10px;
-  border-radius: 28px;
+  flex-direction: column-reverse; /* Trigger at bottom, items expand upwards */
+  align-items: center;
+  gap: 0;
+  padding: 8px;
+  border-radius: 32px;
   animation: slideDockUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-height: 64px; /* Matches the size of the trigger (48px) + padding (16px) */
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              gap 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Open/Hover State for Dock */
+.dock-nav:hover {
+  max-height: 320px;
+  gap: 12px;
+  padding: 12px;
+  overflow: visible;
+}
+
+/* Trigger button styling */
+.dock-trigger {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.dock-trigger:hover {
+  transform: scale(1.08);
+}
+
+/* Stagger/Hide the items by default */
+.dock-items {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.9);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0s linear 0.35s;
+}
+
+/* Reveal items on hover */
+.dock-nav:hover .dock-items {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0s linear 0s;
 }
 
 .dock-item {
@@ -192,26 +246,29 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   color: #ffffff;
   text-decoration: none;
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .dock-item:hover {
-  transform: scale(1.16) translateY(-6px);
+  transform: scale(1.1) translateY(-2px);
 }
 
 .dock-item.active {
   position: relative;
 }
 
+/* Side indicator dot for the active menu option */
 .dock-item.active::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 4px;
   height: 4px;
   background: #ffffff;
@@ -224,30 +281,47 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 4px var(--accent);
 }
 
-.dock-item .tooltip {
+/* Tooltips positioned to the right of the vertical buttons */
+.dock-item .tooltip,
+.dock-trigger .tooltip {
   position: absolute;
-  bottom: 66px;
-  background: rgba(0, 0, 0, 0.8);
+  left: 64px;
+  bottom: auto;
+  top: 50%;
+  transform: translateY(-50%) translateX(-10px) scale(0.95);
+  background: rgba(0, 0, 0, 0.85);
   color: #ffffff;
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(10px) scale(0.95);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="dark"] .dock-item .tooltip {
+[data-theme="dark"] .dock-item .tooltip,
+[data-theme="dark"] .dock-trigger .tooltip {
   background: rgba(255, 255, 255, 0.95);
   color: #000000;
 }
 
-.dock-item:hover .tooltip {
+.dock-item:hover .tooltip,
+.dock-trigger:hover .tooltip {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(-50%) translateX(0) scale(1);
+}
+
+/* Micro-rotation of trigger icon on hover */
+.dock-nav:hover .nav-compass-icon {
+  transform: rotate(180deg);
+}
+
+.nav-compass-icon {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Badge Styles */
