@@ -599,6 +599,17 @@ input, textarea, select {
   background: rgba(0, 0, 0, 0.25) !important;
 }
 
+/* Explicit Legible Dropdown Options styling */
+select option {
+  background-color: #ffffff;
+  color: #111116;
+}
+
+[data-theme="dark"] select option {
+  background-color: #161622;
+  color: #ffffff;
+}
+
 input::placeholder, textarea::placeholder {
   color: var(--text-tertiary);
 }

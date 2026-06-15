@@ -1183,22 +1183,22 @@
       const toast = document.createElement('div');
       
       if (type === 'success') {
-        toast.className = 'glass-panel p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-white shadow-xl flex items-start gap-3 w-80 animate-scale-up pointer-events-auto transition-all duration-300';
+        toast.className = 'glass-panel p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-[var(--text-primary)] shadow-xl flex items-start gap-3 w-80 animate-scale-up pointer-events-auto transition-all duration-300';
       } else {
-        toast.className = 'glass-panel p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-white shadow-xl flex items-start gap-3 w-80 animate-scale-up pointer-events-auto transition-all duration-300';
+        toast.className = 'glass-panel p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-[var(--text-primary)] shadow-xl flex items-start gap-3 w-80 animate-scale-up pointer-events-auto transition-all duration-300';
       }
 
       const icon = type === 'success' ? 'check-circle' : 'alert-triangle';
 
       toast.innerHTML = `
-        <div class="${type === 'success' ? 'text-emerald-400' : 'text-red-400'} mt-0.5">
+        <div class="${type === 'success' ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'} mt-0.5">
           <i data-lucide="${icon}" class="w-5 h-5"></i>
         </div>
         <div class="flex-1">
-          <h4 class="text-sm font-bold">${title}</h4>
-          <p class="text-xs text-slate-300 mt-1 leading-relaxed">${text}</p>
+          <h4 class="text-sm font-bold text-[var(--text-primary)]">${title}</h4>
+          <p class="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">${text}</p>
         </div>
-        <button class="text-slate-400 hover:text-white transition-colors" onclick="this.parentElement.remove()">
+        <button class="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors" onclick="this.parentElement.remove()">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       `;
