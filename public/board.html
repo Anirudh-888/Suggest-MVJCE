@@ -141,6 +141,10 @@
 
         <div class="max-h-[35vh] overflow-y-auto pr-2 scrollbar-thin">
           <p id="modalDescription" class="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">Description</p>
+          <!-- Modal Image Attachment -->
+          <div id="modalImageContainer" class="hidden mt-4 rounded-xl overflow-hidden border border-[var(--border-color)] aspect-video cursor-zoom-in">
+            <img id="modalImage" src="" alt="Attachment" class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300" />
+          </div>
         </div>
 
         <div class="flex justify-between items-center pt-4 border-t border-[var(--border-color)]">
@@ -314,6 +318,17 @@
               
               <!-- Description -->
               <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-6 line-clamp-3">${item.description}</p>
+              
+              <!-- Image Attachment -->
+              ${item.image ? `
+                <div class="relative mt-2 mb-4 rounded-xl overflow-hidden group border border-[var(--border-color)] aspect-video cursor-zoom-in" onclick="event.stopPropagation(); openLightbox('${item.image}', '${item.timestamp}', \`${item.title.replace(/'/g, "\\'")}\`)">
+                  <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1">
+                    <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                    <span>Inspect Image Details</span>
+                  </div>
+                </div>
+              ` : ''}
             </div>
             
             <!-- Card Footer: Time and Upvote -->
@@ -383,6 +398,21 @@
       document.getElementById('modalDescription').textContent = item.description;
       document.getElementById('modalTimestamp').innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> ${new Date(item.timestamp).toLocaleString()}`;
       document.getElementById('modalVoteCount').textContent = item.votes;
+
+      // Render image if present
+      const modalImageContainer = document.getElementById('modalImageContainer');
+      const modalImage = document.getElementById('modalImage');
+      if (item.image) {
+        modalImage.src = item.image;
+        modalImageContainer.classList.remove('hidden');
+        modalImageContainer.onclick = () => {
+          openLightbox(item.image, item.timestamp, item.title);
+        };
+      } else {
+        modalImage.src = '';
+        modalImageContainer.classList.add('hidden');
+        modalImageContainer.onclick = null;
+      }
 
       // Status Styling Setup
       const statusTag = document.getElementById('modalStatusTag');
@@ -503,6 +533,72 @@
       </button>
     </div>
   </div>
+
+  <!-- Lightbox Overlay -->
+  <div id="lightboxOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[200] p-4" onclick="closeLightbox()">
+    <div class="relative max-w-3xl w-full flex flex-col items-center gap-4 animate-scale-up" onclick="event.stopPropagation()">
+      <button onclick="closeLightbox()" class="absolute top-[-45px] right-0 text-white hover:text-gray-300 transition-colors">
+        <i data-lucide="x" class="w-8 h-8"></i>
+      </button>
+      <img id="lightboxImage" class="max-h-[70vh] max-w-full rounded-2xl shadow-2xl border border-white/10 object-contain" src="" alt="Enlarged problem view" />
+      <div class="glass-panel w-full p-5 text-left border border-white/10 bg-black/40">
+        <h4 id="lightboxTitle" class="text-lg font-bold mb-1 text-white">Problem Title</h4>
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-xs text-gray-300">
+          <span id="lightboxTime" class="flex items-center gap-1.5">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-400"></i>
+            Uploaded Time
+          </span>
+          <span id="lightboxElapsed" class="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-lg text-blue-300 font-semibold">
+            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+            Time elapsed: 2 hours ago
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lightbox Control Functions
+    function openLightbox(imgSrc, timestamp, title) {
+      const lightbox = document.getElementById('lightboxOverlay');
+      const lightboxImg = document.getElementById('lightboxImage');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+      const lightboxTime = document.getElementById('lightboxTime');
+      const lightboxElapsed = document.getElementById('lightboxElapsed');
+
+      lightboxImg.src = imgSrc;
+      lightboxTitle.textContent = title;
+      
+      const uploadedDate = new Date(timestamp);
+      lightboxTime.innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-400"></i> Uploaded: ${uploadedDate.toLocaleString()}`;
+      
+      const calculateElapsed = () => {
+        const now = new Date();
+        const diffMs = now - uploadedDate;
+        const diffSecs = Math.floor(diffMs / 1000);
+        const diffMins = Math.floor(diffSecs / 60);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffMins < 1) return "Just now";
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ${diffMins % 60}m ago`;
+        return `${diffDays}d ${diffHours % 24}h ago`;
+      };
+      
+      lightboxElapsed.innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> Active Duration: ${calculateElapsed()}`;
+
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightboxOverlay');
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+    }
+  </script>
 </body>
 </html>
 

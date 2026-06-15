@@ -110,6 +110,26 @@
         <textarea id="description" required rows="5" placeholder="Describe the issue or provide your suggestion in detail. Mention locations or specific context if helpful." class="w-full px-4 py-3 text-sm focus:outline-none resize-none"></textarea>
       </div>
 
+      <!-- Photo Upload Input -->
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Attach Photo (Optional)</label>
+        <div id="photoDropzone" class="w-full p-6 border-2 border-dashed border-[var(--border-color)] rounded-xl bg-white/5 hover:bg-white/10 transition-all flex flex-col items-center justify-center cursor-pointer text-center relative">
+          <input type="file" id="photoInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+          <div class="text-[var(--text-tertiary)] flex flex-col items-center gap-2" id="dropzonePrompt">
+            <i data-lucide="camera" class="w-8 h-8 text-blue-500"></i>
+            <span class="text-sm font-semibold">Click or drag photo here</span>
+            <span class="text-xs">Supports JPEG, PNG up to 5MB (compressed automatically)</span>
+          </div>
+          <div id="photoPreviewContainer" class="hidden w-full flex flex-col items-center gap-3 z-20">
+            <img id="photoPreview" class="max-h-40 rounded-lg shadow-md object-contain border border-[var(--border-color)]" src="" alt="Preview" />
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-[var(--text-secondary)] font-medium truncate max-w-[180px]" id="photoFileName">filename.jpg</span>
+              <button type="button" id="removePhotoBtn" class="text-red-500 hover:text-red-600 text-xs font-bold bg-red-500/10 hover:bg-red-500/20 px-2.5 py-1 rounded-lg transition-all">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Submit Button -->
       <button type="submit" id="submitBtn" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/10 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
         <span>Send Anonymously</span>
@@ -224,6 +244,121 @@
       applyTheme(newTheme);
     });
 
+    // Image handling logic
+    let uploadedImageBase64 = null;
+    const photoInput = document.getElementById('photoInput');
+    const photoDropzone = document.getElementById('photoDropzone');
+    const dropzonePrompt = document.getElementById('dropzonePrompt');
+    const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+    const photoPreview = document.getElementById('photoPreview');
+    const photoFileName = document.getElementById('photoFileName');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+
+    if (photoDropzone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        photoDropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          photoDropzone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        photoDropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          photoDropzone.classList.remove('dragover');
+        }, false);
+      });
+
+      photoDropzone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+          photoInput.files = files;
+          handlePhotoSelected(files[0]);
+        }
+      });
+    }
+
+    if (photoInput) {
+      photoInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          handlePhotoSelected(this.files[0]);
+        }
+      });
+    }
+
+    async function handlePhotoSelected(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+      photoFileName.textContent = file.name;
+      
+      try {
+        uploadedImageBase64 = await compressImage(file, 1000, 1000, 0.8);
+        photoPreview.src = uploadedImageBase64;
+        dropzonePrompt.classList.add('hidden');
+        photoPreviewContainer.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        alert('Failed to process image file.');
+      }
+    }
+
+    if (removePhotoBtn) {
+      removePhotoBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetPhotoInput();
+      });
+    }
+
+    function resetPhotoInput() {
+      uploadedImageBase64 = null;
+      if (photoInput) photoInput.value = '';
+      photoPreview.src = '';
+      photoFileName.textContent = '';
+      dropzonePrompt.classList.remove('hidden');
+      photoPreviewContainer.classList.add('hidden');
+    }
+
+    function compressImage(file, maxWidth, maxHeight, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          };
+          img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+      });
+    }
+
     // Form Submission Logic
     const form = document.getElementById('complaintForm');
     const successOverlay = document.getElementById('successOverlay');
@@ -243,13 +378,14 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ title, category, subcategory, description })
+          body: JSON.stringify({ title, category, subcategory, description, image: uploadedImageBase64 })
         });
 
         if (response.ok) {
           successOverlay.classList.remove('hidden');
           successOverlay.classList.add('flex');
           form.reset();
+          resetPhotoInput();
           // Disable subcategory dropdown again
           subcategorySelect.disabled = true;
           subcategorySelect.classList.add('opacity-50', 'cursor-not-allowed');

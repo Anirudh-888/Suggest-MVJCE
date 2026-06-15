@@ -61,7 +61,7 @@ app.post('/api/admin/verify', (req, res) => {
 // Route: Create new complaint (Anonymous)
 app.post('/api/complaints', async (req, res) => {
   try {
-    const { title, category, subcategory, description } = req.body;
+    const { title, category, subcategory, description, image } = req.body;
 
     if (!title || !category || !subcategory || !description) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -75,6 +75,7 @@ app.post('/api/complaints', async (req, res) => {
       category: category.trim(),
       subcategory: subcategory.trim(),
       description: description.trim(),
+      image: image || null,
       status: 'Pending',
       votes: 0,
       archived: false,
