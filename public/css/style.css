@@ -817,79 +817,7 @@ main.maximized, #adminMainContent.maximized {
   flex: 1 !important;
 }
 
-/* macOS control dot symbol on hover */
-.mac-dot {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.mac-dot::before {
-  content: '';
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 8px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  line-height: 1;
-}
-.flex:hover .mac-dot::before {
-  opacity: 1;
-}
-.mac-dot.bg-\[\#ff5f56\]::before {
-  content: '×';
-  font-size: 9px;
-  margin-top: -1px;
-}
-.mac-dot.bg-\[\#ffbd2e\]::before {
-  content: '–';
-  font-size: 9px;
-  margin-top: -1px;
-}
-.mac-dot.bg-\[\#27c93f\]::before {
-  content: '+';
-  font-size: 8px;
-}
 
-/* Modals window dots too */
-#adminDetailModalCard .flex button::before,
-#contactDeptModalCard .flex button::before {
-  content: '';
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 8px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-#adminDetailModalCard .flex:hover button::before,
-#contactDeptModalCard .flex:hover button::before {
-  opacity: 1;
-}
-#adminDetailModalCard .flex button.bg-red-500::before,
-#contactDeptModalCard .flex button.bg-red-500::before {
-  content: '×';
-  font-size: 9px;
-  margin-top: -1px;
-}
-#adminDetailModalCard .flex button.bg-yellow-500::before,
-#contactDeptModalCard .flex button.bg-yellow-500::before {
-  content: '–';
-  font-size: 9px;
-  margin-top: -1px;
-}
-#adminDetailModalCard .flex button.bg-green-500::before,
-#contactDeptModalCard .flex button.bg-green-500::before {
-  content: '+';
-  font-size: 8px;
-}
 
 
 
