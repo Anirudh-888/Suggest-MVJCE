@@ -77,6 +77,8 @@ app.post('/api/complaints', async (req, res) => {
       description: description.trim(),
       image: image || null,
       status: 'Pending',
+      progressPercent: 0,
+      assignedDepartment: null,
       votes: 0,
       archived: false,
       timestamp: new Date().toISOString()
@@ -126,7 +128,7 @@ app.post('/api/complaints/:id/vote', async (req, res) => {
 app.patch('/api/complaints/:id', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, archived } = req.body;
+    const { status, archived, progressPercent, assignedDepartment } = req.body;
 
     const complaints = await readComplaints();
     const index = complaints.findIndex(c => c.id === id);
@@ -142,11 +144,28 @@ app.patch('/api/complaints/:id', verifyAdmin, async (req, res) => {
         return res.status(400).json({ error: 'Invalid status value' });
       }
       complaints[index].status = status;
+
+      // Automatically sync progressPercent if not explicitly provided
+      if (progressPercent === undefined) {
+        if (status === 'Pending') complaints[index].progressPercent = 0;
+        else if (status === 'In Progress') complaints[index].progressPercent = 50;
+        else if (status === 'Resolved') complaints[index].progressPercent = 100;
+      }
     }
 
     // Update archived if provided
     if (archived !== undefined) {
       complaints[index].archived = !!archived;
+    }
+
+    // Update progressPercent if provided
+    if (progressPercent !== undefined) {
+      complaints[index].progressPercent = Math.max(0, Math.min(100, parseInt(progressPercent) || 0));
+    }
+
+    // Update assignedDepartment if provided
+    if (assignedDepartment !== undefined) {
+      complaints[index].assignedDepartment = assignedDepartment ? assignedDepartment.trim() : null;
     }
 
     await writeComplaints(complaints);

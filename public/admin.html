@@ -45,7 +45,7 @@
     </div>
   </header>
 
-  <!-- Login/Passcode Prompt Overlay (Sleek glass layout) -->
+  <!-- Login/Passcode Prompt Overlay (Sleek glass layout with passcode hint) -->
   <div id="loginOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-[150] flex items-center justify-center p-4">
     <div class="glass-panel w-full max-w-md p-8 text-center animate-scale-up relative">
       <div class="w-14 h-14 rounded-2xl bg-blue-600/15 border border-blue-500/30 text-blue-500 flex items-center justify-center mx-auto mb-6">
@@ -64,12 +64,18 @@
         <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md transition-all">
           Unlock Dashboard
         </button>
+        
+        <!-- Passcode Hint Badge -->
+        <div class="mt-4 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 font-semibold flex items-center justify-center gap-1.5 shadow-sm shadow-blue-500/5">
+          <i data-lucide="key" class="w-3.5 h-3.5"></i>
+          <span>Hint: Passcode is <strong>admin123</strong></span>
+        </div>
       </form>
     </div>
   </div>
 
   <!-- Admin Main Dashboard Content -->
-  <main id="adminMainContent" class="w-full max-w-5xl glass-panel p-6 md:p-8 flex flex-col gap-8 hidden animate-fade-in relative overflow-hidden">
+  <main id="adminMainContent" class="w-full max-w-5xl glass-panel p-6 md:p-8 flex flex-col gap-6 hidden animate-fade-in relative overflow-hidden">
     <!-- macOS Control Dot Bar + Address Pill -->
     <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-4 -mx-6 md:-mx-8 px-6 md:px-8">
       <!-- Window Dots -->
@@ -87,62 +93,125 @@
       <div class="w-16"></div>
     </div>
 
-    <!-- Summary Metrics Grid -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
-        <span class="text-2xl font-black text-blue-500 mb-1" id="metricTotal">0</span>
-        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Total Submissions</span>
+    <!-- Tab Navigation & Live Badge -->
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-[var(--border-color)] pb-2">
+      <div class="flex gap-2">
+        <button id="tabGalleryBtn" class="px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-blue-600 bg-blue-600 text-white transition-all shadow-md flex items-center gap-1.5">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          Live Gallery
+        </button>
+        <button id="tabAnalyticsBtn" class="px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] text-[var(--text-primary)] transition-all flex items-center gap-1.5">
+          <i data-lucide="crown" class="w-4 h-4"></i>
+          Featured & Analytics
+        </button>
       </div>
-      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
-        <span class="text-2xl font-black text-amber-500 mb-1" id="metricPending">0</span>
-        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Pending</span>
+      
+      <!-- Live Monitoring Badge -->
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold self-start sm:self-auto shadow-sm shadow-emerald-500/5">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span>Live Polling Active (8s)</span>
       </div>
-      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
-        <span class="text-2xl font-black text-blue-400 mb-1" id="metricProgress">0</span>
-        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">In Progress</span>
-      </div>
-      <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
-        <span class="text-2xl font-black text-emerald-500 mb-1" id="metricResolved">0</span>
-        <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Resolved</span>
-      </div>
-    </section>
+    </div>
 
-    <!-- Filters Section -->
-    <section class="flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="relative flex-1 w-full">
-        <i data-lucide="search" class="absolute left-3.5 top-3.5 w-4 h-4 text-[var(--text-tertiary)]"></i>
-        <input type="text" id="adminSearchInput" placeholder="Search suggestions..." class="w-full pl-10 pr-4 py-3 text-sm" />
+    <!-- Tab Content 1: Live Complaints Gallery -->
+    <div id="tabContentGallery" class="space-y-6">
+      <!-- Summary Metrics Grid -->
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+          <span class="text-2xl font-black text-blue-500 mb-1" id="metricTotal">0</span>
+          <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Total Submissions</span>
+        </div>
+        <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+          <span class="text-2xl font-black text-amber-500 mb-1" id="metricPending">0</span>
+          <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Pending</span>
+        </div>
+        <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+          <span class="text-2xl font-black text-blue-400 mb-1" id="metricProgress">0</span>
+          <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">In Progress</span>
+        </div>
+        <div class="glass-panel p-5 text-center flex flex-col items-center justify-center">
+          <span class="text-2xl font-black text-emerald-500 mb-1" id="metricResolved">0</span>
+          <span class="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Resolved</span>
+        </div>
+      </section>
+
+      <!-- Filters Section -->
+      <section class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="relative flex-1 w-full">
+          <i data-lucide="search" class="absolute left-3.5 top-3.5 w-4 h-4 text-[var(--text-tertiary)]"></i>
+          <input type="text" id="adminSearchInput" placeholder="Search suggestions..." class="w-full pl-10 pr-4 py-3 text-sm" />
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <select id="adminCategorySelect" class="px-4 py-3 text-sm flex-1 md:flex-none">
+            <option value="all">All Categories</option>
+            <option value="Academics">Academics</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Hostel">Hostel</option>
+            <option value="Canteen">Canteen</option>
+            <option value="Sports & Co-curricular">Sports & Co-curricular</option>
+            <option value="Others">Others</option>
+          </select>
+          
+          <select id="adminStatusSelect" class="px-4 py-3 text-sm flex-1 md:flex-none">
+            <option value="all">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Archived">Archived / Deleted</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Complaints Management Gallery Grid -->
+      <section id="adminComplaintsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Gallery items dynamically populated -->
+        <div class="col-span-full flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+          <p class="text-sm">Loading complaints gallery...</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab Content 2: Featured & Analytics -->
+    <div id="tabContentAnalytics" class="space-y-6 hidden">
+      <div class="text-center md:text-left border-b border-[var(--border-color)] pb-3">
+        <h2 class="text-xl font-bold tracking-tight mb-1">Featured Issues & Analytics</h2>
+        <p class="text-[var(--text-secondary)] text-xs">A comprehensive view of complaints highlighted by the community upvote counts.</p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-        <select id="adminCategorySelect" class="px-4 py-3 text-sm flex-1 md:flex-none">
-          <option value="all">All Categories</option>
-          <option value="Academics">Academics</option>
-          <option value="Infrastructure">Infrastructure</option>
-          <option value="Hostel">Hostel</option>
-          <option value="Canteen">Canteen</option>
-          <option value="Sports & Co-curricular">Sports & Co-curricular</option>
-          <option value="Others">Others</option>
-        </select>
-        
-        <select id="adminStatusSelect" class="px-4 py-3 text-sm flex-1 md:flex-none">
-          <option value="all">All Statuses</option>
-          <option value="Pending">Pending</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-          <option value="Archived">Archived / Deleted</option>
-        </select>
-      </div>
-    </section>
+      <!-- Featured Panels Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: Highest Voted Hero -->
+        <div id="featuredHeroCard" class="lg:col-span-2 glass-panel p-6 border border-amber-500/20 bg-amber-500/5 relative overflow-hidden flex flex-col justify-between min-h-[380px]">
+          <!-- Highest voted item loaded dynamically -->
+          <div class="flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)] w-full">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mb-4"></div>
+            <p class="text-sm">Calculating highest upvoted suggestion...</p>
+          </div>
+        </div>
 
-    <!-- Complaints Management List -->
-    <section id="adminComplaintsList" class="flex flex-col gap-4">
-      <!-- Complains dynamically populated -->
-      <div class="col-span-full flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-        <p class="text-sm">Loading admin dashboard...</p>
+        <!-- Right: Category Stats panel -->
+        <div class="glass-panel p-6 flex flex-col justify-between border border-[var(--border-color)]">
+          <div>
+            <h3 class="text-lg font-bold mb-4 border-b border-[var(--border-color)] pb-2 flex items-center gap-1.5">
+              <i data-lucide="pie-chart" class="w-5 h-5 text-blue-500"></i>
+              Category Distribution
+            </h3>
+            <div id="statsCategoriesContainer" class="space-y-4">
+              <!-- Stats dynamically loaded -->
+              <p class="text-xs text-[var(--text-tertiary)] text-center py-10">Calculating statistical metrics...</p>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[var(--border-color)] text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] font-bold">
+            Data updates dynamically on new reports.
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   </main>
 
   <!-- macOS Detail Popup Modal for Admin -->
@@ -178,7 +247,7 @@
 
         <h3 id="modalTitle" class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Title</h3>
 
-        <div class="max-h-[30vh] overflow-y-auto pr-2 scrollbar-thin">
+        <div class="max-h-[25vh] overflow-y-auto pr-2 scrollbar-thin">
           <p id="modalDescription" class="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">Description</p>
           <!-- Modal Image Attachment -->
           <div id="modalImageContainer" class="hidden mt-4 rounded-xl overflow-hidden border border-[var(--border-color)] aspect-video cursor-zoom-in">
@@ -186,7 +255,29 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-center pt-4 border-t border-[var(--border-color)]">
+        <!-- Assigned Department Info -->
+        <div id="modalDepartmentInfo" class="hidden flex items-center gap-2.5 p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-500 font-semibold">
+          <i data-lucide="building-2" class="w-4 h-4"></i>
+          <div>
+            <div class="text-[var(--text-tertiary)] text-[10px] uppercase tracking-wider font-bold">Forwarded to Department</div>
+            <div id="modalDepartmentName" class="text-[var(--text-primary)] text-sm font-semibold mt-0.5">Department Name</div>
+          </div>
+        </div>
+
+        <!-- Resolution Progress Slider -->
+        <div class="space-y-3 p-4 bg-white/5 dark:bg-black/15 rounded-xl border border-[var(--border-color)] shadow-inner">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-[var(--text-secondary)] uppercase tracking-wider">Solving Progress</span>
+            <span id="modalProgressVal" class="text-blue-500 text-sm font-black">0%</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-[10px] text-[var(--text-tertiary)] font-bold uppercase">0%</span>
+            <input type="range" id="modalProgressSlider" min="0" max="100" class="flex-1 h-1.5 bg-white/10 dark:bg-black/30 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none" />
+            <span class="text-[10px] text-[var(--text-tertiary)] font-bold uppercase">100%</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-3 border-t border-[var(--border-color)]">
           <span id="modalTimestamp" class="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
             <i data-lucide="clock" class="w-3.5 h-3.5"></i>
             Time
@@ -199,19 +290,25 @@
         </div>
 
         <!-- Administrative Actions block inside Modal -->
-        <div class="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-color)] justify-end items-center">
-          <button id="modalPendingBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500/15">
-            Pending
+        <div class="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-color)] justify-between items-center animate-fade-in">
+          <button id="modalContactDeptBtn" class="px-4 py-2.5 text-xs font-bold rounded-xl border border-blue-500/35 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shadow-blue-500/5">
+            <i data-lucide="mail-plus" class="w-4 h-4"></i>
+            Contact Department
           </button>
-          <button id="modalProgressBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-500 hover:bg-blue-500/15">
-            In Progress
-          </button>
-          <button id="modalResolveBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/15">
-            Resolve
-          </button>
-          <button id="modalArchiveBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 ml-2">
-            Archive
-          </button>
+          <div class="flex gap-2">
+            <button id="modalPendingBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500/15">
+              Pending
+            </button>
+            <button id="modalProgressBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-500 hover:bg-blue-500/15">
+              In Progress
+            </button>
+            <button id="modalResolveBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/15">
+              Resolve
+            </button>
+            <button id="modalArchiveBtn" class="px-3 py-2 text-xs font-bold rounded-lg border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 ml-2">
+              Archive
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -221,8 +318,10 @@
   <nav class="dock-nav glass-dock">
     <!-- Trigger Button -->
     <div class="dock-trigger">
-      <div class="w-14 h-14 rounded-[18px] glass-nav-btn btn-nav-compass flex items-center justify-center shadow-xl hover:scale-105 transition-transform duration-300">
-        <i data-lucide="compass" class="w-6 h-6 nav-compass-icon"></i>
+      <div class="w-14 h-14 rounded-[18px] btn-nav-compass-outer shadow-xl">
+        <div class="w-[44px] h-[44px] rounded-[13px] btn-nav-compass-inner">
+          <i data-lucide="compass" class="w-5 h-5 nav-compass-icon"></i>
+        </div>
       </div>
       <span class="tooltip">Navigation</span>
     </div>
@@ -254,6 +353,7 @@
   <script>
     let adminComplaints = [];
     let adminPasscode = localStorage.getItem('adminPasscode') || '';
+    let pollInterval = null;
 
     // Theme Switcher Logic
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -315,6 +415,7 @@
       loginOverlay.classList.add('flex');
       adminMainContent.classList.add('hidden');
       logoutBtn.classList.add('hidden');
+      stopPolling();
     }
 
     function hideLogin() {
@@ -322,6 +423,7 @@
       loginOverlay.classList.remove('flex');
       adminMainContent.classList.remove('hidden');
       logoutBtn.classList.remove('hidden');
+      startPolling();
     }
 
     // Login Form Submit Handlers
@@ -358,6 +460,20 @@
       showLogin();
     });
 
+    // Live Polling controls
+    function startPolling() {
+      if (!pollInterval) {
+        pollInterval = setInterval(loadAdminData, 8000); // 8 seconds poll
+      }
+    }
+
+    function stopPolling() {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+    }
+
     // Fetch administrative items
     async function loadAdminData() {
       try {
@@ -365,9 +481,13 @@
         if (response.ok) {
           adminComplaints = await response.json();
           updateMetrics();
-          renderAdminList();
+          
+          if (currentTab === 'gallery') {
+            renderAdminList();
+          } else {
+            renderAnalytics();
+          }
         } else if (response.status === 401) {
-          // Passcode invalidated
           logoutBtn.click();
         }
       } catch (err) {
@@ -390,7 +510,34 @@
       return date.toLocaleString();
     }
 
-    // Render Management List Items
+    // Tab switching handler
+    let currentTab = 'gallery';
+    const tabGalleryBtn = document.getElementById('tabGalleryBtn');
+    const tabAnalyticsBtn = document.getElementById('tabAnalyticsBtn');
+    const tabContentGallery = document.getElementById('tabContentGallery');
+    const tabContentAnalytics = document.getElementById('tabContentAnalytics');
+
+    function switchTab(tab) {
+      currentTab = tab;
+      if (tab === 'gallery') {
+        tabGalleryBtn.className = 'px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-blue-600 bg-blue-600 text-white transition-all shadow-md flex items-center gap-1.5';
+        tabAnalyticsBtn.className = 'px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] text-[var(--text-primary)] transition-all flex items-center gap-1.5';
+        tabContentGallery.classList.remove('hidden');
+        tabContentAnalytics.classList.add('hidden');
+        renderAdminList();
+      } else {
+        tabAnalyticsBtn.className = 'px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-blue-600 bg-blue-600 text-white transition-all shadow-md flex items-center gap-1.5';
+        tabGalleryBtn.className = 'px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] text-[var(--text-primary)] transition-all flex items-center gap-1.5';
+        tabContentGallery.classList.add('hidden');
+        tabContentAnalytics.classList.remove('hidden');
+        renderAnalytics();
+      }
+    }
+
+    tabGalleryBtn.addEventListener('click', () => switchTab('gallery'));
+    tabAnalyticsBtn.addEventListener('click', () => switchTab('analytics'));
+
+    // Render Gallery cards
     function renderAdminList() {
       const container = document.getElementById('adminComplaintsList');
       const search = document.getElementById('adminSearchInput').value.toLowerCase();
@@ -402,7 +549,7 @@
         
         let matchesStatus = false;
         if (status === 'all') {
-          matchesStatus = !item.archived; // show all active
+          matchesStatus = !item.archived;
         } else if (status === 'Archived') {
           matchesStatus = item.archived;
         } else {
@@ -416,14 +563,13 @@
         return matchesCategory && matchesStatus && matchesSearch;
       });
 
-      // Sort newest first by default in admin
       filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="glass-panel p-10 text-center text-[var(--text-tertiary)] flex flex-col items-center justify-center">
-            <i data-lucide="inbox" class="w-10 h-10 mb-2"></i>
-            <p class="text-sm">No items matching criteria.</p>
+          <div class="col-span-full glass-panel p-12 text-center text-[var(--text-tertiary)] flex flex-col items-center justify-center">
+            <i data-lucide="package-open" class="w-10 h-10 mb-2"></i>
+            <p class="text-sm font-semibold">No issues matching this filter found.</p>
           </div>
         `;
         lucide.createIcons();
@@ -435,63 +581,214 @@
         if (item.status === 'In Progress') badgeClass = 'badge-status-inprogress';
         if (item.status === 'Resolved') badgeClass = 'badge-status-resolved';
 
+        const progressPercent = item.progressPercent || 0;
+
         return `
-          <div class="glass-panel p-6 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center text-left relative overflow-hidden cursor-pointer hover:border-blue-500/30 transition-colors duration-300" id="card-${item.id}" onclick="openAdminDetail('${item.id}')">
-            <!-- Left Info Block -->
-            <div class="flex-1 space-y-2">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500">
+          <div class="glass-panel p-5 flex flex-col justify-between text-left relative overflow-hidden cursor-pointer hover:border-blue-500/35 hover:shadow-lg transition-all duration-300" id="card-${item.id}" onclick="openAdminDetail('${item.id}')">
+            <div>
+              <div class="flex justify-between items-start mb-3">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-500 max-w-[150px] truncate">
                   ${item.category} &rsaquo; ${item.subcategory}
                 </span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeClass}">
                   ${item.status}
                 </span>
-                ${item.archived ? `
-                  <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/15 border border-red-500/30 text-red-400">
-                    Archived
-                  </span>
-                ` : ''}
               </div>
-              <h3 class="text-lg font-bold">${item.title}</h3>
-              <p class="text-sm text-[var(--text-secondary)] line-clamp-3">${item.description}</p>
               
-              <!-- Image Attachment -->
-              ${item.image ? `
-                <div class="relative mt-2 mb-4 rounded-xl overflow-hidden group border border-[var(--border-color)] aspect-video max-w-md cursor-zoom-in" onclick="event.stopPropagation(); openLightbox('${item.image}', '${item.timestamp}', \`${item.title.replace(/'/g, "\\'")}\`)">
-                  <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1">
-                    <i data-lucide="zoom-in" class="w-4 h-4"></i>
-                    <span>Inspect Image Details</span>
+              <h3 class="text-base font-bold text-[var(--text-primary)] mb-1 line-clamp-1">${item.title}</h3>
+              <p class="text-xs text-[var(--text-secondary)] line-clamp-3 mb-4 leading-relaxed">${item.description}</p>
+              
+              <!-- Gallery image container -->
+              <div class="relative mb-4 rounded-xl overflow-hidden border border-[var(--border-color)] aspect-video bg-white/5 dark:bg-black/20 flex items-center justify-center">
+                ${item.image ? `
+                  <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]" />
+                  <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-semibold gap-1" onclick="event.stopPropagation(); openLightbox('${item.image}', '${item.timestamp}', \`${item.title.replace(/'/g, "\\'")}\`)">
+                    <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
+                    <span>Zoom Image</span>
                   </div>
+                ` : `
+                  <div class="flex flex-col items-center justify-center text-[var(--text-tertiary)] gap-1 p-4">
+                    <i data-lucide="image-off" class="w-6 h-6 stroke-1"></i>
+                    <span class="text-[9px] uppercase tracking-wider">No photo attached</span>
+                  </div>
+                `}
+              </div>
+
+              <!-- Forwarded Department Tag -->
+              ${item.assignedDepartment ? `
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-semibold mb-3 self-start max-w-full truncate shadow-sm shadow-emerald-500/5">
+                  <i data-lucide="building-2" class="w-3 h-3"></i>
+                  <span>Assigned: ${item.assignedDepartment}</span>
                 </div>
               ` : ''}
 
-              <div class="flex gap-4 text-xs text-[var(--text-tertiary)] pt-1">
-                <span>Submitted: ${formatDate(item.timestamp)}</span>
-                <span class="flex items-center gap-1 text-blue-500 font-bold">
-                  <i data-lucide="arrow-big-up-dash" class="w-3.5 h-3.5"></i>
-                  ${item.votes} votes
-                </span>
+              <!-- Solving Progress Bar -->
+              <div class="space-y-1 mb-4">
+                <div class="flex justify-between text-[10px] font-bold">
+                  <span class="text-[var(--text-secondary)]">Solving Progress</span>
+                  <span class="text-blue-500 font-extrabold">${progressPercent}%</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/10 dark:bg-black/25 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                </div>
               </div>
             </div>
 
-            <!-- Action Controls Block -->
-            <div class="flex flex-wrap gap-2 w-full md:w-auto items-center md:border-l border-[var(--border-color)] md:pl-6 pt-4 md:pt-0" onclick="event.stopPropagation()">
-              <!-- Quick State Transitions -->
-              <button onclick="updateStatus('${item.id}', 'Pending')" class="px-3 py-2 text-xs font-bold rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500/15 ${item.status === 'Pending' ? 'ring-2 ring-amber-500/30' : ''}">
-                Pending
-              </button>
-              <button onclick="updateStatus('${item.id}', 'In Progress')" class="px-3 py-2 text-xs font-bold rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-500 hover:bg-blue-500/15 ${item.status === 'In Progress' ? 'ring-2 ring-blue-500/30' : ''}">
-                In Progress
-              </button>
-              <button onclick="updateStatus('${item.id}', 'Resolved')" class="px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/15 ${item.status === 'Resolved' ? 'ring-2 ring-emerald-500/30' : ''}">
-                Resolve
+            <!-- Card Footer Controls -->
+            <div class="flex items-center justify-between pt-3 border-t border-[var(--border-color)] mt-auto" onclick="event.stopPropagation()">
+              <button onclick="openForwardModal('${item.id}')" class="px-2.5 py-1.5 rounded-lg border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/15 text-blue-500 text-[10px] font-bold flex items-center gap-1 transition-all">
+                <i data-lucide="mail-plus" class="w-3 h-3"></i>
+                Forward
               </button>
               
-              <!-- Archive / Restore Action -->
-              <button onclick="toggleArchive('${item.id}', ${!item.archived})" class="px-3 py-2 text-xs font-bold rounded-lg border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/15 ml-auto md:ml-2">
-                ${item.archived ? 'Restore' : 'Archive'}
+              <!-- Quick State Transitions -->
+              <div class="flex items-center gap-1">
+                <button onclick="updateStatus('${item.id}', 'Pending')" class="px-2 py-1 text-[9px] font-bold rounded bg-amber-500/5 hover:bg-amber-500/15 text-amber-500 border border-amber-500/10 ${item.status === 'Pending' ? 'ring-1 ring-amber-500/30' : ''}" title="Mark Pending">
+                  P
+                </button>
+                <button onclick="updateStatus('${item.id}', 'In Progress')" class="px-2 py-1 text-[9px] font-bold rounded bg-blue-500/5 hover:bg-blue-500/15 text-blue-500 border border-blue-500/10 ${item.status === 'In Progress' ? 'ring-1 ring-blue-500/30' : ''}" title="Mark In Progress">
+                  IP
+                </button>
+                <button onclick="updateStatus('${item.id}', 'Resolved')" class="px-2 py-1 text-[9px] font-bold rounded bg-emerald-500/5 hover:bg-emerald-500/15 text-emerald-500 border border-emerald-500/10 ${item.status === 'Resolved' ? 'ring-1 ring-emerald-500/30' : ''}" title="Mark Resolved">
+                  R
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Render Analytics Dashboard
+    function renderAnalytics() {
+      const heroCard = document.getElementById('featuredHeroCard');
+      const statsCategoriesContainer = document.getElementById('statsCategoriesContainer');
+
+      if (adminComplaints.length === 0) {
+        heroCard.innerHTML = `
+          <div class="flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)] w-full h-full">
+            <i data-lucide="package-open" class="w-12 h-12 mb-3"></i>
+            <p class="text-sm font-semibold">No complaints registered in the system yet.</p>
+          </div>
+        `;
+        statsCategoriesContainer.innerHTML = `<p class="text-xs text-[var(--text-tertiary)] text-center py-10">No data available</p>`;
+        lucide.createIcons();
+        return;
+      }
+
+      const activeComplaints = adminComplaints.filter(c => !c.archived);
+      if (activeComplaints.length === 0) {
+        heroCard.innerHTML = `
+          <div class="flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)] w-full h-full">
+            <i data-lucide="package-open" class="w-12 h-12 mb-3"></i>
+            <p class="text-sm font-semibold">No active complaints registered.</p>
+          </div>
+        `;
+      } else {
+        const highestVoted = activeComplaints.reduce((max, c) => (c.votes > max.votes) ? c : max, activeComplaints[0]);
+        const progress = highestVoted.progressPercent || 0;
+        let badgeClass = 'badge-status-pending';
+        if (highestVoted.status === 'In Progress') badgeClass = 'badge-status-inprogress';
+        if (highestVoted.status === 'Resolved') badgeClass = 'badge-status-resolved';
+
+        heroCard.innerHTML = `
+          <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-amber-500/20 to-transparent blur-3xl pointer-events-none"></div>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-amber-500 text-[10px] font-black uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
+                <i data-lucide="flame" class="w-3.5 h-3.5 animate-pulse"></i>
+                Most Upvoted Issue
+              </span>
+              <span class="text-xs text-[var(--text-tertiary)]">${formatDate(highestVoted.timestamp)}</span>
+            </div>
+
+            <div class="space-y-2">
+              <h3 class="text-2xl font-extrabold text-[var(--text-primary)] leading-tight">${highestVoted.title}</h3>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-bold">
+                  ${highestVoted.category} &rsaquo; ${highestVoted.subcategory}
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${badgeClass}">
+                  ${highestVoted.status}
+                </span>
+              </div>
+              <p class="text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3 mt-2">${highestVoted.description}</p>
+            </div>
+
+            ${highestVoted.image ? `
+              <div class="relative rounded-xl overflow-hidden border border-[var(--border-color)] max-h-40 aspect-video w-full max-w-sm cursor-zoom-in" onclick="openLightbox('${highestVoted.image}', '${highestVoted.timestamp}', \`${highestVoted.title.replace(/'/g, "\\'")}\`)">
+                <img src="${highestVoted.image}" alt="${highestVoted.title}" class="w-full h-full object-cover" />
+              </div>
+            ` : ''}
+
+            <!-- Solving Progress Bar -->
+            <div class="space-y-1.5 max-w-md">
+              <div class="flex justify-between text-xs font-bold">
+                <span class="text-[var(--text-secondary)]">Resolution Progress</span>
+                <span class="text-blue-500 font-extrabold">${progress}%</span>
+              </div>
+              <div class="w-full h-2 bg-white/10 dark:bg-black/25 rounded-full overflow-hidden border border-[var(--border-color)]">
+                <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+              </div>
+            </div>
+            
+            ${highestVoted.assignedDepartment ? `
+              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold self-start shadow-sm shadow-emerald-500/5">
+                <i data-lucide="building-2" class="w-3.5 h-3.5"></i>
+                <span>Assigned Department: ${highestVoted.assignedDepartment}</span>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="flex items-center justify-between pt-6 border-t border-[var(--border-color)] mt-6">
+            <div class="flex items-center gap-1 text-amber-500 text-lg font-black">
+              <i data-lucide="arrow-big-up-dash" class="w-5 h-5 animate-bounce"></i>
+              <span>${highestVoted.votes} votes</span>
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="openForwardModal('${highestVoted.id}')" class="px-4 py-2.5 rounded-xl border border-blue-500/35 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 text-xs font-bold flex items-center gap-1.5 transition-all">
+                <i data-lucide="mail-plus" class="w-4 h-4"></i>
+                Contact Department
               </button>
+              <button onclick="openAdminDetail('${highestVoted.id}')" class="px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] text-xs font-bold transition-all">
+                Inspect Details
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Category Distributions
+      const counts = {};
+      let total = 0;
+      activeComplaints.forEach(c => {
+        counts[c.category] = (counts[c.category] || 0) + 1;
+        total++;
+      });
+
+      const categories = ["Academics", "Infrastructure", "Hostel", "Canteen", "Sports & Co-curricular", "Others"];
+      statsCategoriesContainer.innerHTML = categories.map(cat => {
+        const count = counts[cat] || 0;
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        
+        let colorClass = 'bg-blue-500';
+        if (cat === 'Academics') colorClass = 'bg-rose-500';
+        else if (cat === 'Infrastructure') colorClass = 'bg-amber-500';
+        else if (cat === 'Hostel') colorClass = 'bg-purple-500';
+        else if (cat === 'Canteen') colorClass = 'bg-emerald-500';
+        else if (cat === 'Sports & Co-curricular') colorClass = 'bg-pink-500';
+
+        return `
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-[var(--text-primary)]">${cat}</span>
+              <span class="text-[var(--text-secondary)] font-bold">${count} (${pct}%)</span>
+            </div>
+            <div class="w-full h-2 bg-white/10 dark:bg-black/25 rounded-full overflow-hidden border border-[var(--border-color)]">
+              <div class="h-full ${colorClass} rounded-full transition-all" style="width: ${pct}%"></div>
             </div>
           </div>
         `;
@@ -514,18 +811,19 @@
 
         if (response.ok) {
           const updated = await response.json();
-          // Update local data and rerender
           const index = adminComplaints.findIndex(c => c.id === id);
           if (index !== -1) {
             adminComplaints[index] = updated;
             updateMetrics();
-            renderAdminList();
+            if (currentTab === 'gallery') renderAdminList();
+            else renderAnalytics();
             
             // Sync modal if currently open
             const modal = document.getElementById('adminDetailModal');
             if (modal && modal.dataset.activeId === id) {
               syncModalState(updated);
             }
+            showToast('Status Updated', `Issue status changed to "${newStatus}".`);
           }
         } else if (response.status === 401) {
           logoutBtn.click();
@@ -553,13 +851,15 @@
           if (index !== -1) {
             adminComplaints[index] = updated;
             updateMetrics();
-            renderAdminList();
+            if (currentTab === 'gallery') renderAdminList();
+            else renderAnalytics();
             
             // Sync modal if currently open
             const modal = document.getElementById('adminDetailModal');
             if (modal && modal.dataset.activeId === id) {
               syncModalState(updated);
             }
+            showToast('Archive State Changed', shouldArchive ? 'Issue has been archived.' : 'Issue restored to active board.');
           }
         } else if (response.status === 401) {
           logoutBtn.click();
@@ -647,6 +947,29 @@
       const archiveBtn = document.getElementById('modalArchiveBtn');
       archiveBtn.textContent = item.archived ? 'Restore' : 'Archive';
 
+      // Sync slider progress
+      const progressSlider = document.getElementById('modalProgressSlider');
+      const progressVal = document.getElementById('modalProgressVal');
+      const progressPercent = item.progressPercent || 0;
+      progressSlider.value = progressPercent;
+      progressVal.textContent = `${progressPercent}%`;
+
+      // Sync department info
+      const deptInfo = document.getElementById('modalDepartmentInfo');
+      const deptName = document.getElementById('modalDepartmentName');
+      if (item.assignedDepartment) {
+        deptName.textContent = item.assignedDepartment;
+        deptInfo.classList.remove('hidden');
+      } else {
+        deptInfo.classList.add('hidden');
+      }
+
+      // Bind Contact Department button click
+      const modalContactBtn = document.getElementById('modalContactDeptBtn');
+      modalContactBtn.onclick = () => {
+        openForwardModal(item.id);
+      };
+
       // Reset state indicators on status buttons
       const pendingBtn = document.getElementById('modalPendingBtn');
       const progressBtn = document.getElementById('modalProgressBtn');
@@ -658,10 +981,201 @@
       if (item.status === 'Resolved') resolveBtn.classList.add('ring-2', 'ring-emerald-500/30');
     }
 
+    // Slider range change binding
+    const progressSlider = document.getElementById('modalProgressSlider');
+    const progressVal = document.getElementById('modalProgressVal');
+    
+    progressSlider.addEventListener('input', function() {
+      progressVal.textContent = `${this.value}%`;
+    });
+
+    progressSlider.addEventListener('change', async function() {
+      const activeId = document.getElementById('adminDetailModal').dataset.activeId;
+      if (!activeId) return;
+
+      const pct = parseInt(this.value);
+      let newStatus = undefined;
+
+      const item = adminComplaints.find(c => c.id === activeId);
+      if (item) {
+        if (pct === 0) newStatus = 'Pending';
+        else if (pct === 100) newStatus = 'Resolved';
+        else if (item.status !== 'In Progress') newStatus = 'In Progress';
+      }
+
+      try {
+        const response = await fetch(`/api/complaints/${activeId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Passcode': adminPasscode
+          },
+          body: JSON.stringify({ 
+            progressPercent: pct,
+            ...(newStatus ? { status: newStatus } : {})
+          })
+        });
+
+        if (response.ok) {
+          const updated = await response.json();
+          const index = adminComplaints.findIndex(c => c.id === activeId);
+          if (index !== -1) {
+            adminComplaints[index] = updated;
+            updateMetrics();
+            if (currentTab === 'gallery') renderAdminList();
+            else renderAnalytics();
+            syncModalState(updated);
+            
+            showToast('Progress Updated', `Solving progress has been changed to ${pct}%.`);
+          }
+        } else if (response.status === 401) {
+          logoutBtn.click();
+        }
+      } catch (err) {
+        console.error("Failed to update progress:", err);
+      }
+    });
+
+    // Forward / Dispatch Modal Controls
+    let forwardActiveId = null;
+    const contactDeptModal = document.getElementById('contactDeptModal');
+    const contactDeptForm = document.getElementById('contactDeptForm');
+    const deptSelect = document.getElementById('deptSelect');
+    const deptTemplate = document.getElementById('deptTemplate');
+    const deptMessage = document.getElementById('deptMessage');
+
+    const templates = {
+      urgent_maintenance: "URGENT ACTION REQUIRED:\nPlease dispatch a team to resolve the infrastructural defect reported at MVJCE campus. A fast resolution is highly expected by the students.",
+      food_hygiene: "ATTN FOOD SERVICE INSPECTORS:\nThere is a complaint regarding food hygiene and quality at the campus canteen. Please inspect the vendor space immediately and review adherence to food safety standards.",
+      material_review: "LIBRARY & RESOURCE MANAGEMENT MEMO:\nA suggestion has been raised requesting a review of curriculum teaching materials or books. Please cross-reference inventory or coordinate review sessions.",
+      hostel_repair: "HOSTEL WARDEN COMPLAINT FORWARD:\nA maintenance issue has been reported in the residential hostel building. Please inspect and dispatch repair staff at the earliest convenience."
+    };
+
+    deptTemplate.addEventListener('change', function() {
+      const selected = this.value;
+      if (selected !== 'custom' && templates[selected]) {
+        deptMessage.value = templates[selected];
+      } else {
+        deptMessage.value = '';
+      }
+    });
+
+    function openForwardModal(id) {
+      forwardActiveId = id;
+      const item = adminComplaints.find(c => c.id === id);
+      if (!item) return;
+
+      closeAdminDetail();
+
+      deptSelect.value = '';
+      deptTemplate.value = 'custom';
+      deptMessage.value = '';
+
+      contactDeptModal.classList.remove('hidden');
+      contactDeptModal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeContactDeptModal() {
+      contactDeptModal.classList.add('hidden');
+      contactDeptModal.classList.remove('flex');
+      forwardActiveId = null;
+    }
+
+    contactDeptForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!forwardActiveId) return;
+
+      const dept = deptSelect.value;
+      const message = deptMessage.value;
+      
+      const item = adminComplaints.find(c => c.id === forwardActiveId);
+      if (!item) return;
+
+      // Forward settings
+      const newStatus = item.status === 'Pending' ? 'In Progress' : item.status;
+      const newProgress = (item.status === 'Pending' && (item.progressPercent || 0) === 0) ? 50 : (item.progressPercent || 0);
+
+      try {
+        const response = await fetch(`/api/complaints/${forwardActiveId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Passcode': adminPasscode
+          },
+          body: JSON.stringify({
+            assignedDepartment: dept,
+            status: newStatus,
+            progressPercent: newProgress
+          })
+        });
+
+        if (response.ok) {
+          const updated = await response.json();
+          const index = adminComplaints.findIndex(c => c.id === forwardActiveId);
+          if (index !== -1) {
+            adminComplaints[index] = updated;
+            updateMetrics();
+            if (currentTab === 'gallery') renderAdminList();
+            else renderAnalytics();
+            
+            showToast('Forwarded Successfully', `Forwarded to ${dept}. A dispatch alert has been sent.`);
+            closeContactDeptModal();
+          }
+        } else if (response.status === 401) {
+          logoutBtn.click();
+        }
+      } catch (err) {
+        console.error("Failed to forward:", err);
+        showToast('Error', 'Connection to server failed.', 'error');
+      }
+    });
+
+    // Toast notifications helper
+    function showToast(title, text, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      if (type === 'success') {
+        toast.className = 'glass-panel p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-white shadow-xl flex items-start gap-3 w-80 animate-scale-up pointer-events-auto transition-all duration-300';
+      } else {
+        toast.className = 'glass-panel p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-white shadow-xl flex items-start gap-3 w-80 animate-scale-up pointer-events-auto transition-all duration-300';
+      }
+
+      const icon = type === 'success' ? 'check-circle' : 'alert-triangle';
+
+      toast.innerHTML = `
+        <div class="${type === 'success' ? 'text-emerald-400' : 'text-red-400'} mt-0.5">
+          <i data-lucide="${icon}" class="w-5 h-5"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-sm font-bold">${title}</h4>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">${text}</p>
+        </div>
+        <button class="text-slate-400 hover:text-white transition-colors" onclick="this.parentElement.remove()">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', '-translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
     // Event Bindings for inputs
-    document.getElementById('adminSearchInput').addEventListener('input', renderAdminList);
-    document.getElementById('adminCategorySelect').addEventListener('change', renderAdminList);
-    document.getElementById('adminStatusSelect').addEventListener('change', renderAdminList);
+    document.getElementById('adminSearchInput').addEventListener('input', () => {
+      if (currentTab === 'gallery') renderAdminList();
+    });
+    document.getElementById('adminCategorySelect').addEventListener('change', () => {
+      if (currentTab === 'gallery') renderAdminList();
+    });
+    document.getElementById('adminStatusSelect').addEventListener('change', () => {
+      if (currentTab === 'gallery') renderAdminList();
+    });
 
     // Run Auth Verification
     checkAuth();
@@ -794,6 +1308,67 @@
       lightbox.classList.remove('flex');
     }
   </script>
+  <!-- Contact Department Modal Overlay -->
+  <div id="contactDeptModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden items-center justify-center z-[130] p-4">
+    <div class="glass-panel max-w-md w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
+      <!-- macOS window controls mock -->
+      <div class="flex gap-1.5 absolute top-6 left-6">
+        <button onclick="closeContactDeptModal()" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" title="Cancel"></button>
+        <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-60"></div>
+        <div class="w-3 h-3 rounded-full bg-green-500 opacity-60"></div>
+      </div>
+      <button onclick="closeContactDeptModal()" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      
+      <h3 class="text-xl font-bold tracking-tight mb-2 mt-4 text-[var(--text-primary)]">Contact & Forward Department</h3>
+      <p class="text-xs text-[var(--text-secondary)] mb-6">Forward the selected anonymous suggestion to the relevant college authority for quick resolution.</p>
+      
+      <form id="contactDeptForm" class="space-y-4">
+        <div>
+          <label for="deptSelect" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Target College Department</label>
+          <select id="deptSelect" required class="w-full px-4 py-3 text-sm">
+            <option value="" disabled selected>Select Department</option>
+            <option value="Estate & Infrastructure Maintenance">Estate & Infrastructure Maintenance (R.402 / Facilities)</option>
+            <option value="Academic Council & Library Staff">Academic Council & Library Staff (Teaching / Books)</option>
+            <option value="Hostel Management & Warden">Hostel Management & Warden (Rooms / Mess)</option>
+            <option value="Canteen Food Operations">Canteen Food Operations (Hygiene / Food Quality)</option>
+            <option value="Sports & Co-curricular Committee">Sports & Co-curricular Committee (Gym / Club Events)</option>
+            <option value="Office of Registrar & Admin">Office of Registrar & Administration</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="deptTemplate" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Quick Template</label>
+          <select id="deptTemplate" class="w-full px-4 py-3 text-sm">
+            <option value="custom" selected>Write custom message...</option>
+            <option value="urgent_maintenance">Urgent Maintenance Request (High priority action required)</option>
+            <option value="food_hygiene">Food Hygiene Audit Request (Immediate inspection required)</option>
+            <option value="material_review">Academic Materials / Library Review Request</option>
+            <option value="hostel_repair">Hostel Facilities Repair Request</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="deptMessage" class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">Dispatch Memo / Message</label>
+          <textarea id="deptMessage" required rows="4" placeholder="Enter message to send to the department..." class="w-full px-4 py-3 text-sm focus:outline-none resize-none"></textarea>
+        </div>
+        
+        <div class="flex gap-2 justify-end pt-2">
+          <button type="button" onclick="closeContactDeptModal()" class="px-4 py-2 text-xs font-bold rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1 shadow-md shadow-blue-500/5">
+            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+            Send Dispatch Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer" class="fixed top-6 right-6 z-[250] flex flex-col gap-3 pointer-events-none"></div>
 </body>
 </html>
 

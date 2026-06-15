@@ -156,8 +156,10 @@
   <nav class="dock-nav glass-dock">
     <!-- Trigger Button -->
     <div class="dock-trigger">
-      <div class="w-14 h-14 rounded-[18px] glass-nav-btn btn-nav-compass flex items-center justify-center shadow-xl hover:scale-105 transition-transform duration-300">
-        <i data-lucide="compass" class="w-6 h-6 nav-compass-icon"></i>
+      <div class="w-14 h-14 rounded-[18px] btn-nav-compass-outer shadow-xl">
+        <div class="w-[44px] h-[44px] rounded-[13px] btn-nav-compass-inner">
+          <i data-lucide="compass" class="w-5 h-5 nav-compass-icon"></i>
+        </div>
       </div>
       <span class="tooltip">Navigation</span>
     </div>

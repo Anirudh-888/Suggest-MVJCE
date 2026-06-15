@@ -308,21 +308,102 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Specific theme adaptability colors and glow shadow on hover */
 /* Compass Navigation (Blue) */
-.btn-nav-compass {
-  color: #38bdf8 !important;
-  border-color: rgba(56, 189, 248, 0.45) !important;
+.btn-nav-compass-outer {
+  background: rgba(10, 15, 36, 0.5) !important;
+  backdrop-filter: blur(30px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(220%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
-[data-theme="light"] .btn-nav-compass {
-  color: #1d4ed8 !important;
-  border-color: rgba(29, 78, 216, 0.35) !important;
-  background: rgba(29, 78, 216, 0.05) !important;
+
+[data-theme="light"] .btn-nav-compass-outer {
+  background: rgba(225, 230, 255, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 
+    0 12px 40px rgba(31, 38, 135, 0.08),
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.85) !important;
 }
-.btn-nav-compass:hover {
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+
+.btn-nav-compass-inner {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.02) 100%) !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.8) !important; /* High contrast cyan outline */
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.25),
+    0 0 12px rgba(56, 189, 248, 0.25) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
-[data-theme="light"] .btn-nav-compass:hover {
-  box-shadow: 0 0 14px rgba(29, 78, 216, 0.35);
+
+[data-theme="light"] .btn-nav-compass-inner {
+  background: linear-gradient(135deg, rgba(29, 78, 216, 0.12) 0%, rgba(29, 78, 216, 0.02) 100%) !important;
+  border: 1.5px solid rgba(29, 78, 216, 0.85) !important; /* High contrast royal blue outline */
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.7),
+    0 0 12px rgba(29, 78, 216, 0.15) !important;
 }
+
+/* Hover effects */
+.dock-trigger:hover .btn-nav-compass-outer {
+  transform: scale(1.05);
+  background: rgba(15, 23, 50, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.45),
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="light"] .dock-trigger:hover .btn-nav-compass-outer {
+  background: rgba(215, 223, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 
+    0 16px 48px rgba(31, 38, 135, 0.12),
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95) !important;
+}
+
+.dock-trigger:hover .btn-nav-compass-inner {
+  border-color: #00f3ff !important; /* Brighten cyan border on hover */
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    0 0 16px rgba(0, 243, 255, 0.6) !important;
+}
+
+[data-theme="light"] .dock-trigger:hover .btn-nav-compass-inner {
+  border-color: #1d4ed8 !important;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.9),
+    0 0 16px rgba(29, 78, 216, 0.5) !important;
+}
+
+/* Compass Icon Styling for iOS 26 Look */
+.nav-compass-icon {
+  color: #00f3ff !important; /* Vivid Neon Cyan */
+  filter: drop-shadow(0 0 6px rgba(0, 243, 255, 0.75)) !important;
+  stroke-width: 2.5px !important;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-theme="light"] .nav-compass-icon {
+  color: #1d4ed8 !important; /* Vivid Royal Blue */
+  filter: drop-shadow(0 0 4px rgba(29, 78, 216, 0.35)) !important;
+}
+
+/* Fill the polygon (needle) of the compass for premium solid details */
+.nav-compass-icon polygon {
+  fill: #00f3ff !important;
+}
+
+[data-theme="light"] .nav-compass-icon polygon {
+  fill: #1d4ed8 !important;
+}
+
 
 /* Submit Feedback (Rose) */
 .btn-nav-feedback {
