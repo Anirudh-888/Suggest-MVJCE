@@ -1232,6 +1232,7 @@
 
     if (closeBtn && mainEl) {
       closeBtn.addEventListener('click', () => {
+        console.log('Close button clicked');
         mainEl.classList.add('window-closed');
         if (restoreContainer) {
           restoreContainer.classList.remove('hidden');
@@ -1242,6 +1243,7 @@
 
     if (restoreBtn && mainEl && restoreContainer) {
       restoreBtn.addEventListener('click', () => {
+        console.log('Restore button clicked');
         mainEl.classList.remove('window-closed');
         restoreContainer.classList.add('hidden');
         restoreContainer.classList.remove('flex');
@@ -1250,6 +1252,7 @@
 
     if (minimizeBtn && mainEl) {
       minimizeBtn.addEventListener('click', () => {
+        console.log('Minimize button clicked');
         mainEl.classList.toggle('minimized');
       });
       
@@ -1257,6 +1260,7 @@
       if (addressBar) {
         addressBar.addEventListener('click', () => {
           if (mainEl.classList.contains('minimized')) {
+            console.log('Address bar clicked to restore minimized window');
             mainEl.classList.remove('minimized');
           }
         });
@@ -1266,6 +1270,7 @@
 
     if (maximizeBtn && mainEl) {
       maximizeBtn.addEventListener('click', () => {
+        console.log('Maximize button clicked');
         mainEl.classList.toggle('maximized');
       });
     }
