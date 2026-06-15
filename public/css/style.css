@@ -689,3 +689,23 @@ input[type="range"]::-moz-range-thumb:hover {
   background: var(--accent);
 }
 
+/* Bright glassmorphic card for login prompt overlay */
+.bright-glass-card {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(40px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.7), 
+    0 24px 64px rgba(31, 38, 135, 0.15) !important;
+}
+
+[data-theme="dark"] .bright-glass-card {
+  background: rgba(15, 15, 24, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.15), 
+    0 24px 64px rgba(0, 0, 0, 0.5) !important;
+}
+
+

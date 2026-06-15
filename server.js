@@ -41,7 +41,7 @@ async function writeComplaints(data) {
 // Middleware: Verify Admin Passcode for protected routes
 function verifyAdmin(req, res, next) {
   const passcode = req.headers['x-admin-passcode'];
-  if (passcode === ADMIN_PASSCODE) {
+  if (passcode && passcode.trim() === ADMIN_PASSCODE) {
     next();
   } else {
     res.status(401).json({ error: 'Unauthorized access. Invalid admin passcode.' });
@@ -51,7 +51,7 @@ function verifyAdmin(req, res, next) {
 // Route: Verify admin password
 app.post('/api/admin/verify', (req, res) => {
   const { passcode } = req.body;
-  if (passcode === ADMIN_PASSCODE) {
+  if (passcode && passcode.trim() === ADMIN_PASSCODE) {
     res.json({ success: true });
   } else {
     res.status(401).json({ success: false, error: 'Invalid passcode' });

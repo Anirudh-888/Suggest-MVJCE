@@ -45,23 +45,25 @@
     </div>
   </header>
 
-  <!-- Login/Passcode Prompt Overlay (Sleek glass layout with passcode hint) -->
-  <div id="loginOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-[150] flex items-center justify-center p-4">
-    <div class="glass-panel w-full max-w-md p-8 text-center animate-scale-up relative">
-      <div class="w-14 h-14 rounded-2xl bg-blue-600/15 border border-blue-500/30 text-blue-500 flex items-center justify-center mx-auto mb-6">
-        <i data-lucide="lock" class="w-8 h-8"></i>
+  <!-- Login/Passcode Prompt Overlay (Bright iOS Glassmorphic style with custom logo) -->
+  <div id="loginOverlay" class="fixed inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/25 to-pink-600/20 backdrop-blur-3xl z-[150] flex items-center justify-center p-4">
+    <div class="bright-glass-card w-full max-w-md p-8 text-center animate-scale-up relative rounded-[28px] border border-white/40 shadow-2xl">
+      <!-- Admin logo inside squircle -->
+      <div class="w-16 h-16 rounded-[20px] bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/20 border border-white/20 text-white">
+        <i data-lucide="shield-check" class="w-8 h-8 filter drop-shadow(0 2px 4px rgba(0,0,0,0.15))"></i>
       </div>
-      <h2 class="text-2xl font-bold mb-2">Admin Security</h2>
-      <p class="text-sm text-[var(--text-secondary)] mb-6">Please input your administrative security passcode to gain workspace access.</p>
+      
+      <h2 class="text-2xl font-bold tracking-tight mb-2 text-[var(--text-primary)]">Admin Security</h2>
+      <p class="text-xs text-[var(--text-secondary)] mb-6 px-2 leading-relaxed">Please input your administrative security passcode to gain workspace access.</p>
       
       <form id="loginForm" class="space-y-4 text-left">
         <div>
           <input type="password" id="passcodeInput" placeholder="••••••••" required class="w-full text-center px-4 py-3 tracking-[0.2em] font-mono text-lg" />
         </div>
-        <div id="loginError" class="text-xs text-red-500 text-center font-medium hidden">
+        <div id="loginError" class="text-xs text-red-500 text-center font-semibold hidden">
           Access Denied: Invalid security passcode
         </div>
-        <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md transition-all">
+        <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md transition-all active:scale-98">
           Unlock Dashboard
         </button>
         
@@ -352,8 +354,11 @@
   <!-- Script Logic -->
   <script>
     let adminComplaints = [];
-    let adminPasscode = localStorage.getItem('adminPasscode') || '';
+    let adminPasscode = (localStorage.getItem('adminPasscode') || '').trim();
     let pollInterval = null;
+
+    // Initialize Lucide Icons immediately to render login page icons
+    lucide.createIcons();
 
     // Theme Switcher Logic
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -395,7 +400,7 @@
         const response = await fetch('/api/admin/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ passcode: adminPasscode })
+          body: JSON.stringify({ passcode: adminPasscode.trim() })
         });
         if (response.ok) {
           hideLogin();
@@ -416,6 +421,7 @@
       adminMainContent.classList.add('hidden');
       logoutBtn.classList.add('hidden');
       stopPolling();
+      lucide.createIcons(); // ensure icons are checked
     }
 
     function hideLogin() {
@@ -429,7 +435,7 @@
     // Login Form Submit Handlers
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const code = document.getElementById('passcodeInput').value;
+      const code = document.getElementById('passcodeInput').value.trim();
       const errorEl = document.getElementById('loginError');
 
       try {
