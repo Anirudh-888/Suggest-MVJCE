@@ -217,7 +217,7 @@
   </main>
 
   <!-- macOS Detail Popup Modal for Admin -->
-  <div id="adminDetailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[120] p-4 animate-fade-in" onclick="closeAdminDetail()">
+  <div id="adminDetailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[2000] p-4 animate-fade-in" onclick="closeAdminDetail()">
     <div id="adminDetailModalCard" class="glass-panel max-w-lg w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
       <!-- macOS Style window dots -->
       <div class="flex gap-1.5 absolute top-6 left-6 modal-keep-minimized">
@@ -358,7 +358,7 @@
     let pollInterval = null;
 
     // Initialize Lucide Icons immediately to render login page icons
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 
     // Theme Switcher Logic
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -437,7 +437,7 @@
       adminMainContent.classList.add('hidden');
       logoutBtn.classList.add('hidden');
       stopPolling();
-      lucide.createIcons(); // ensure icons are checked
+      if (typeof lucide !== 'undefined') lucide.createIcons(); // ensure icons are checked
     }
 
     function hideLogin() {
@@ -614,7 +614,7 @@
             <p class="text-sm font-semibold">No issues matching this filter found.</p>
           </div>
         `;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
       }
 
@@ -700,7 +700,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     // Render Analytics Dashboard
@@ -716,7 +716,7 @@
           </div>
         `;
         statsCategoriesContainer.innerHTML = `<p class="text-xs text-[var(--text-tertiary)] text-center py-10">No data available</p>`;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
       }
 
@@ -836,7 +836,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     // Call update status endpoint
@@ -917,6 +917,9 @@
       if (!item) return;
 
       const modal = document.getElementById('adminDetailModal');
+      const card = document.getElementById('adminDetailModalCard');
+      card.classList.remove('modal-minimized-card', 'modal-maximized-card');
+      modal.classList.remove('modal-minimized-overlay');
       modal.dataset.activeId = id;
 
       document.getElementById('modalCategoryTag').textContent = `${item.category} \u203A ${item.subcategory}`;
@@ -962,7 +965,7 @@
 
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function closeAdminDetail() {
@@ -1115,7 +1118,7 @@
 
       contactDeptModal.classList.remove('hidden');
       contactDeptModal.classList.add('flex');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function closeContactDeptModal() {
@@ -1200,7 +1203,7 @@
       `;
 
       container.appendChild(toast);
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
 
       setTimeout(() => {
         toast.classList.add('opacity-0', '-translate-y-2');
@@ -1274,6 +1277,53 @@
         mainEl.classList.toggle('maximized');
       });
     }
+
+    // Modal minimize/maximize handlers
+    function toggleModalMinimize() {
+      const overlay = document.getElementById('adminDetailModal');
+      const card = document.getElementById('adminDetailModalCard');
+      
+      if (card.classList.contains('modal-minimized-card')) {
+        card.classList.remove('modal-minimized-card');
+        overlay.classList.remove('modal-minimized-overlay');
+      } else {
+        card.classList.remove('modal-maximized-card');
+        card.classList.add('modal-minimized-card');
+        overlay.classList.add('modal-minimized-overlay');
+      }
+    }
+
+    function toggleModalMaximize() {
+      const overlay = document.getElementById('adminDetailModal');
+      const card = document.getElementById('adminDetailModalCard');
+      
+      if (card.classList.contains('modal-maximized-card')) {
+        card.classList.remove('modal-maximized-card');
+      } else {
+        card.classList.remove('modal-minimized-card');
+        overlay.classList.remove('modal-minimized-overlay');
+        card.classList.add('modal-maximized-card');
+      }
+    }
+
+    // Bind dots buttons click handlers
+    document.getElementById('modalBtnMinimize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleModalMinimize();
+    });
+    document.getElementById('modalBtnMaximize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleModalMaximize();
+    });
+
+    // Clicking minimized card restores it
+    document.getElementById('adminDetailModalCard').addEventListener('click', (e) => {
+      const card = document.getElementById('adminDetailModalCard');
+      if (card.classList.contains('modal-minimized-card')) {
+        if (e.target.closest('button')) return;
+        toggleModalMinimize();
+      }
+    });
   </script>
 
   <!-- Restore Window Floating Widget -->
@@ -1291,7 +1341,7 @@
   </div>
 
   <!-- Lightbox Overlay -->
-  <div id="lightboxOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[200] p-4" onclick="closeLightbox()">
+  <div id="lightboxOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[2200] p-4" onclick="closeLightbox()">
     <div class="relative max-w-3xl w-full flex flex-col items-center gap-4 animate-scale-up" onclick="event.stopPropagation()">
       <button onclick="closeLightbox()" class="absolute top-[-45px] right-0 text-white hover:text-gray-300 transition-colors">
         <i data-lucide="x" class="w-8 h-8"></i>
@@ -1346,7 +1396,7 @@
 
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function closeLightbox() {
@@ -1356,7 +1406,7 @@
     }
   </script>
   <!-- Contact Department Modal Overlay -->
-  <div id="contactDeptModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden items-center justify-center z-[130] p-4">
+  <div id="contactDeptModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden items-center justify-center z-[2100] p-4">
     <div class="glass-panel max-w-md w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
       <!-- macOS window controls mock -->
       <div class="flex gap-1.5 absolute top-6 left-6">
@@ -1415,7 +1465,7 @@
   </div>
 
   <!-- Notification Toast Container -->
-  <div id="toastContainer" class="fixed top-6 right-6 z-[250] flex flex-col gap-3 pointer-events-none"></div>
+  <div id="toastContainer" class="fixed top-6 right-6 z-[2300] flex flex-col gap-3 pointer-events-none"></div>
 </body>
 </html>
 

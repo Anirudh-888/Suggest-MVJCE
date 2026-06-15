@@ -139,7 +139,7 @@
   </main>
 
   <!-- Success Toast Overlay -->
-  <div id="successOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-md hidden items-center justify-center z-[110] p-4">
+  <div id="successOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-md hidden items-center justify-center z-[2000] p-4">
     <div class="glass-panel max-w-md w-full p-8 text-center animate-scale-up">
       <div class="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-500 mx-auto flex items-center justify-center mb-6 border border-emerald-500/30">
         <i data-lucide="check-circle" class="w-10 h-10"></i>
@@ -456,7 +456,7 @@
     }
 
     // Initialize Lucide Icons
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   </script>
 
   <!-- Restore Window Floating Widget -->

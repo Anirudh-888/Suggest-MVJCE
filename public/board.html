@@ -112,7 +112,7 @@
   </main>
 
   <!-- macOS Detail Popup Modal -->
-  <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[120] p-4 animate-fade-in" onclick="closeDetail()">
+  <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-md hidden items-center justify-center z-[2000] p-4 animate-fade-in" onclick="closeDetail()">
     <div id="detailModalCard" class="glass-panel max-w-lg w-full p-6 md:p-8 text-left animate-scale-up relative" onclick="event.stopPropagation()">
       <!-- macOS Style window dots -->
       <div class="flex gap-1.5 absolute top-6 left-6 modal-keep-minimized">
@@ -293,7 +293,7 @@
             <p class="text-sm font-medium">No active suggestions found for this criteria.</p>
           </div>
         `;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
       }
 
@@ -350,7 +350,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     // Upvoting API Handler
@@ -436,7 +436,7 @@
 
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function closeDetail() {
@@ -562,7 +562,7 @@
 
     // Initial Loading Calls
     loadComplaints();
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   </script>
 
   <style>
@@ -587,7 +587,7 @@
   </div>
 
   <!-- Lightbox Overlay -->
-  <div id="lightboxOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[200] p-4" onclick="closeLightbox()">
+  <div id="lightboxOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center z-[2200] p-4" onclick="closeLightbox()">
     <div class="relative max-w-3xl w-full flex flex-col items-center gap-4 animate-scale-up" onclick="event.stopPropagation()">
       <button onclick="closeLightbox()" class="absolute top-[-45px] right-0 text-white hover:text-gray-300 transition-colors">
         <i data-lucide="x" class="w-8 h-8"></i>
@@ -642,7 +642,7 @@
 
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function closeLightbox() {
